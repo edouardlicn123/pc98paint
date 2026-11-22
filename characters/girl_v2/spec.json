@@ -1,0 +1,62 @@
+{
+  "id": "girl_v2",
+  "name": "眼镜女生",
+  "gender": "female",
+  "proportions": {
+    "heads": 6.2,
+    "head_width_ratio": [0.19, 0.24],
+    "eye_width_ratio": [0.40, 0.52],
+    "nose_px": [1, 2],
+    "mouth_px": [1, 2]
+  },
+  "hair": {
+    "color": "brown",
+    "shadow_hue": "red_dark",
+    "highlight": "gold",
+    "bangs_blocks": 3,
+    "length": "medium",
+    "tie": "low_ponytail_green_ribbon"
+  },
+  "outfit": {
+    "type": "sailor",
+    "base": "navy",
+    "collar": "white",
+    "accent": "green",
+    "neckwear": "navy_scarf",
+    "sleeve": "long_white_cuff_two_stripes",
+    "skirt": "navy_pleated",
+    "socks": "gray_knee_high",
+    "shoes": "black_loafers",
+    "accessory": "round_gold_glasses",
+    "prop": "brown_book_under_left_arm"
+  },
+  "palette": {
+    "skin": ["#f7dcc6", "#e0b09a", "#b97f6e"],
+    "hair": ["#8a5a3c", "#5a3524", "#c89a6a"],
+    "navy": ["#1d2f52", "#2c4675", "#131f38"],
+    "white": ["#f3f2ec", "#cfd6e6", "#aab6d8"],
+    "accent": ["#4f8a5b", "#2f5a3a"]
+  },
+  "render": {
+    "sprite_h": 640,
+    "sprite_w_max": 300,
+    "line_darken": 0.55,
+    "dither_density": 0.5,
+    "dither_band": 2,
+    "palette_max": 16
+  },
+  "expression_set": ["smile", "surprise", "shy"],
+  "sheet": {
+    "views": 3,
+    "full_body": true,
+    "feet_visible": true,
+    "head_to_toe": true,
+    "margin_ratio": 0.02
+  },
+  "checks": {
+    "neutral_gray_max": 0.06,
+    "outline_min": 0.65,
+    "dark_chroma_min": 12,
+    "hair_tones": [3, 8]
+  }
+}

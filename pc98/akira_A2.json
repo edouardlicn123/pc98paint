@@ -1,0 +1,23 @@
+{
+  "anchors": {
+    "eye": 0.995,
+    "chin": 1.0,
+    "nose": [
+      0.344,
+      0.997
+    ]
+  },
+  "eye_y": 113,
+  "chin": 113,
+  "nose": [
+    84,
+    113
+  ],
+  "painted": {
+    "nose": 1,
+    "socket": 2,
+    "bang": 4,
+    "neck": 15,
+    "chin": 1
+  }
+}

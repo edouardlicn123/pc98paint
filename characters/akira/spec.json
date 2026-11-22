@@ -1,0 +1,212 @@
+{
+  "id": "akira",
+  "name": "明",
+  "gender": "female",
+  "proportions": {
+    "heads": 6.3,
+    "head_width_ratio": [
+      0.18,
+      0.24
+    ],
+    "eye_width_ratio": [
+      0.38,
+      0.52
+    ],
+    "nose_px": [
+      1,
+      2
+    ],
+    "mouth_px": [
+      1,
+      3
+    ]
+  },
+  "hair": {
+    "color": "blue-black",
+    "shadow_hue": "wine",
+    "highlight": "cream",
+    "bangs_blocks": 4,
+    "length": "long"
+  },
+  "outfit": {
+    "type": "sailor",
+    "base": "navy",
+    "collar": "white",
+    "accent": "red"
+  },
+  "palette": {
+    "skin": [
+      "#f6d9c8",
+      "#e3a89a",
+      "#b06a78"
+    ],
+    "hair": [
+      "#0a0f2a",
+      "#2a1740",
+      "#8a7bb0"
+    ],
+    "navy": [
+      "#14255b",
+      "#273c7b",
+      "#5b6fae"
+    ],
+    "white": [
+      "#f2f0e6",
+      "#d9d6e8",
+      "#aab6d8"
+    ],
+    "accent": [
+      "#c0392b"
+    ]
+  },
+  "render": {
+    "sprite_h": 1024,
+    "sprite_w_max": 520,
+    "line_darken": 0.55,
+    "dither_density": 0.5,
+    "dither_band": 2,
+    "palette_max": 256
+  },
+  "expression_set": [
+    "neutral",
+    "smile",
+    "blush",
+    "surprise"
+  ],
+  "face_planes": [
+    "forehead",
+    "temple_shadow",
+    "eye_socket_shadow",
+    "nose_bridge",
+    "nose_side_shadow",
+    "cheekbone",
+    "jaw",
+    "neck"
+  ],
+  "profile": {
+    "nose_depth": 8,
+    "jaw_angle": 118,
+    "skull_depth": 1.0
+  },
+  "sheet": {
+    "views": 3,
+    "full_body": true,
+    "feet_visible": true,
+    "head_to_toe": true,
+    "margin_ratio": 0.02
+  },
+  "checks": {
+    "neutral_gray_max": 0.06,
+    "outline_min": 0.65,
+    "dark_chroma_min": 12,
+    "hair_tones": [
+      3,
+      12
+    ]
+  },
+  "face_anchors": {
+    "eye": 0.868421052631579,
+    "chin": 1.0,
+    "nose": [
+      0.1875,
+      0.8859649122807017
+    ]
+  },
+  "face_anchors_abs": {
+    "eye": [
+      80,
+      130
+    ],
+    "nose": [
+      80,
+      145
+    ],
+    "chin": [
+      80,
+      170
+    ]
+  },
+  "clean_palette": [
+    7, 12, 26,
+    13, 21, 38,
+    10, 16, 36,
+    18, 26, 51,
+    30, 38, 68,
+    42, 27, 61,
+    74, 56, 96,
+    58, 46, 78,
+    217, 198, 166,
+    15, 27, 66,
+    21, 38, 92,
+    28, 47, 110,
+    39, 60, 123,
+    43, 35, 80,
+    61, 79, 150,
+    85, 104, 171,
+    74, 89, 158,
+    255, 250, 234,
+    245, 241, 227,
+    227, 227, 242,
+    220, 223, 240,
+    205, 210, 234,
+    167, 178, 214,
+    255, 233, 210,
+    251, 220, 191,
+    246, 211, 180,
+    236, 190, 164,
+    215, 154, 142,
+    176, 111, 121,
+    201, 133, 128,
+    208, 71, 58,
+    180, 57, 46,
+    124, 34, 40,
+    226, 90, 74
+  ],
+  "eyebrow_fix": {
+    "reference_size": [
+      295,
+      640
+    ],
+    "lines": [
+      [
+        [120, 61],
+        [124, 59],
+        [128, 57],
+        [132, 56],
+        [136, 56],
+        [140, 57],
+        [143, 59]
+      ],
+      [
+        [121, 62],
+        [126, 60],
+        [132, 59],
+        [138, 60],
+        [142, 62]
+      ],
+      [
+        [153, 59],
+        [157, 57],
+        [161, 55],
+        [165, 54],
+        [169, 54],
+        [173, 55],
+        [175, 56]
+      ],
+      [
+        [154, 61],
+        [158, 60],
+        [162, 59],
+        [166, 58],
+        [170, 58],
+        [174, 59]
+      ]
+    ],
+    "cleanup_boxes": [
+      [119, 53, 146, 63],
+      [151, 51, 177, 62]
+    ],
+    "line_color": [29, 33, 49],
+    "skin_color": [249, 211, 176]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "eye_y": 63,
+  "chin": 89,
+  "nose": [
+    82,
+    89
+  ],
+  "painted": {
+    "nose": 0,
+    "socket": 0,
+    "bang": 2,
+    "neck": 5,
+    "chin": 0
+  },
+  "nose_hue_ok": false,
+  "jaw_sep": -28.394000000000005
+}

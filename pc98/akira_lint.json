@@ -1,0 +1,46 @@
+{
+  "pass": true,
+  "checks": {
+    "size": {
+      "value": [
+        258,
+        640
+      ],
+      "pass": true
+    },
+    "neutral_gray": {
+      "value": 0.05458969317169088,
+      "limit": 0.06,
+      "pass": true
+    },
+    "outline": {
+      "value": 0.9192938209331651,
+      "limit": 0.65,
+      "pass": true
+    },
+    "dark_chroma": {
+      "value": 1.0,
+      "limit": 0.9,
+      "pass": true
+    },
+    "hair_tones": {
+      "value": 5,
+      "limit": [
+        3,
+        8
+      ],
+      "pass": true
+    },
+    "warm_highlights": {
+      "value": 0.6618425697140841,
+      "limit": 0.6,
+      "pass": true
+    }
+  },
+  "render_stats": {
+    "w": 258,
+    "h": 640,
+    "line_ratio": 0.057043362403100775,
+    "dither_ratio": 0.10545663759689923
+  }
+}

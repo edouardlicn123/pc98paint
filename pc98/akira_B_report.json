@@ -1,0 +1,39 @@
+{
+  "sprite": {
+    "w": 135,
+    "h": 640,
+    "line_ratio": 0.04912037037037037,
+    "dither_ratio": 0.14118055555555556
+  },
+  "sheet": {
+    "pass": false,
+    "checks": {
+      "full_body": {
+        "value": 4.74,
+        "limit": ">=2.0",
+        "pass": true
+      },
+      "feet_visible": {
+        "value": 0.342,
+        "limit": ">=0.02",
+        "pass": true
+      },
+      "face_tones": {
+        "value": 10,
+        "limit": [
+          4,
+          9
+        ],
+        "pass": false
+      },
+      "shadow_share": {
+        "value": 0.271,
+        "limit": [
+          0.05,
+          0.45
+        ],
+        "pass": true
+      }
+    }
+  }
+}
