@@ -23,8 +23,9 @@ sys.path.insert(0, str(ROOT / "tools" / "lib"))
 import pixelize  # noqa: E402
 import repair  # noqa: E402
 import schema  # noqa: E402
+import style as art_style  # noqa: E402
 
-SHEET_POS = (
+SHEET_POS = art_style.with_credit(
     "character design sheet, three FULL-LENGTH full body views side by side: front view, side view, back view, "
     "ENTIRE body visible from head to shoes, whole legs, feet and shoes included, no cropping at waist or knees, "
     "generous white margin above the head and below the feet, feet on the same baseline, "

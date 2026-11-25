@@ -1,0 +1,42 @@
+{
+  "id": "male_teacher",
+  "name": "高中男老师",
+  "ref": "06",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "shirt",
+  "body": {
+    "heads": 7.25,
+    "head_height_px": 61,
+    "shoulder_ratio": 1.95,
+    "face_width_ratio": 0.74,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "medium",
+    "brows": "thick_flat",
+    "nose": "short_vertical",
+    "mouth": "half_upturned",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "back_swept",
+    "tie": "none",
+    "style": "brown swept-back hair",
+    "color_family": "brown",
+    "reflection": "block"
+  }
+}

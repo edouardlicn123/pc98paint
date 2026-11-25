@@ -1,0 +1,136 @@
+{
+  "id": "tall_male_highschool_shirt",
+  "archetype": "tall_male_highschool",
+  "type": "shirt",
+  "name": "高个高中男生装束",
+  "outfit": {
+    "type": "shirt",
+    "base": "white shirt with rolled sleeves",
+    "collar": "open collar",
+    "accent": "none",
+    "bottom": "dark brown trousers with belt"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#f6d9c8",
+        "#e8b39c",
+        "#b57a6a"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#dd77aa",
+        "#aa4477",
+        "#662244"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "top",
+      "role": "white",
+      "group": "outfit",
+      "refs": [
+        "#ffffff",
+        "#ddddbb"
+      ],
+      "paint": "white"
+    },
+    {
+      "id": "bottom",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#885544",
+        "#664433",
+        "#443322"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#885544",
+        "#664433"
+      ],
+      "paint": "flat"
+    }
+  ],
+  "garment_layers": [
+    {
+      "id": "top",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "bottom",
+      "over": [
+        "skin"
+      ],
+      "occludes_below": true
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "top": {
+        "surface": "plain"
+      },
+      "bottom": {
+        "surface": "plain"
+      }
+    },
+    "folds": [
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.4,
+          0.12
+        ],
+        "to": [
+          0.32,
+          0.86
+        ],
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.62,
+          0.14
+        ],
+        "to": [
+          0.7,
+          0.82
+        ],
+        "width": 2.5,
+        "tone": 1
+      },
+      {
+        "material": "top",
+        "kind": "pinch",
+        "from": [
+          0.32,
+          0.28
+        ],
+        "to": [
+          0.26,
+          0.68
+        ],
+        "width": 2.0,
+        "tone": 1
+      }
+    ],
+    "occlusions": []
+  }
+}

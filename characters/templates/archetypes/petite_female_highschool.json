@@ -1,0 +1,42 @@
+{
+  "id": "petite_female_highschool",
+  "name": "矮小女高中生",
+  "ref": "24",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "cardigan",
+  "body": {
+    "heads": 6.25,
+    "head_height_px": 74,
+    "shoulder_ratio": 1.49,
+    "face_width_ratio": 0.72,
+    "bust": {
+      "size": 1,
+      "center_y_head": 1.8,
+      "separation": 0.38,
+      "under_boob_y_head": 2.1,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "extra_large_round",
+    "eye_size": "xlarge",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": []
+  },
+  "hair": {
+    "length": "bob",
+    "bangs": "straight",
+    "tie": "none",
+    "style": "pink brown short bob",
+    "color_family": "pink",
+    "reflection": "ring"
+  }
+}

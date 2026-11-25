@@ -23,6 +23,7 @@ import pixelize  # noqa: E402
 import prompt  # noqa: E402
 import repair  # noqa: E402
 import schema  # noqa: E402
+import template  # noqa: E402
 
 
 def save_drawing_debug(debug, directory):
@@ -90,9 +91,16 @@ def main():
     args = ap.parse_args()
 
     spec = schema.load(ROOT / args.spec)
-    pos, neg = prompt.build(spec)
+    effective, template_meta = template.resolve_template(spec)
+    resolved = template_meta["resolved_template"]
+    print("TEMPLATE:", resolved["archetype"], "/", resolved["outfit"],
+          f"({resolved['source']})")
+    pos, neg = prompt.build(effective)
     print("PROMPT:", pos)
     print("NEGATIVE:", neg)
+
+    # 新管线一律使用模板解析后的 body；不再区分旧实例。
+    render_body = effective.get("body")
 
     out_prefix = OUT_DIR / Path(args.out).name   # 一律落到 output/ 下
     tier = args.tier or spec["render"].get("tier", "half")
@@ -112,8 +120,10 @@ def main():
                 baseline = None
         _, render_debug = asset3.render(
             ROOT / args.source, tier, name, pal, material_region=True,
-            materials=spec.get("materials"), material_baseline=baseline,
-            return_debug=True, drawing_config=spec.get("drawing"))
+            materials=effective.get("materials"),
+            material_baseline=baseline,
+            return_debug=True, drawing_config=effective.get("drawing"),
+            body=render_body)
         if args.drawing_debug:
             save_drawing_debug(
                 render_debug,
@@ -127,6 +137,7 @@ def main():
             "renderer": "matregion", "tier": tier,
             "materials": material_report["stats"] if material_report else {},
             "material_area_baseline": baseline["source"] if baseline else None,
+            "resolved_template": resolved,
         }
     else:
         img, stats = pixelize.pixelize(ROOT / args.source, spec["render"], out_prefix)
@@ -145,6 +156,7 @@ def main():
         report["materials"] = material_report
         report["pass"] = report["pass"] and material_report["pass"]
     img.save(Path(str(out_prefix) + "_tachie.png"))
+    report["resolved_template"] = resolved
     report["render_stats"] = stats
     out_json = Path(str(out_prefix) + "_lint.json")
     out_json.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")

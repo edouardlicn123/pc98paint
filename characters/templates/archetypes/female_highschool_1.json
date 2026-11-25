@@ -1,0 +1,44 @@
+{
+  "id": "female_highschool_1",
+  "name": "女高中生1",
+  "ref": "01",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "blazer",
+  "body": {
+    "heads": 6.5,
+    "head_height_px": 76,
+    "shoulder_ratio": 1.12,
+    "face_width_ratio": 0.66,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond",
+    "eye_size": "medium",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "downturned",
+    "markings": [
+      "round_thin_glasses"
+    ]
+  },
+  "hair": {
+    "length": "bob",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "green short bob with pink bow",
+    "color_family": "green",
+    "reflection": "ring"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "id": "middle_aged_man",
+  "name": "中年男性",
+  "ref": "19",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "suit",
+  "body": {
+    "heads": 7.5,
+    "head_height_px": 64,
+    "shoulder_ratio": 2.27,
+    "face_width_ratio": 0.78,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "arms_crossed"
+  },
+  "face": {
+    "shape": "square",
+    "eyes": "narrow_bags",
+    "eye_size": "medium",
+    "brows": "thin_gray",
+    "nose": "L_shape",
+    "mouth": "upturned",
+    "markings": [
+      "round_thin_glasses",
+      "eye_bags"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "back_swept",
+    "tie": "none",
+    "style": "grey white back-swept hair",
+    "color_family": "gray",
+    "reflection": "block"
+  }
+}

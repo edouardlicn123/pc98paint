@@ -49,14 +49,14 @@ class LineDrawingTests(unittest.TestCase):
         candidate = np.zeros(fg.shape, dtype=bool)
         candidate[2:18, 1] = True   # 外轮廓
         candidate[3:9, 5] = True    # 发丝
-        candidate[3:9, 12] = True   # 内部结构
+        candidate[3:16, 12] = True  # 内部结构（短排线清理下限 12px 以上）
 
         layers = drawing.build_line_layers(
             candidate, fg, idx, materials, min_size=1)
 
         self.assertTrue(np.all(layers.kind[2:18, 1] == drawing.OUTLINE))
         self.assertTrue(np.all(layers.kind[3:9, 5] == drawing.STRANDS))
-        self.assertTrue(np.all(layers.kind[3:9, 12] == drawing.STRUCTURE))
+        self.assertTrue(np.all(layers.kind[3:16, 12] == drawing.STRUCTURE))
         values = layers.kind[layers.mask]
         self.assertTrue(np.all((values >= 1) & (values <= 3)))
 

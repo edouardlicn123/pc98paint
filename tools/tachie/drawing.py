@@ -4,9 +4,12 @@ from dataclasses import dataclass
 
 import numpy as np
 from scipy.ndimage import (binary_closing, binary_dilation,
+                           binary_erosion, binary_fill_holes,
                            distance_transform_edt, gaussian_filter, label)
 
 from bust_sample2 import zhang_suen
+
+import shading
 
 OUTLINE, STRUCTURE, STRANDS = 1, 2, 3
 CONNECT8 = np.ones((3, 3), dtype=bool)
@@ -109,6 +112,36 @@ def build_line_layers(candidate, fg, material_idx=None, materials=None,
         protected=outline | seams
         | (np.zeros(candidate.shape, bool) if protected is None else protected))
 
+    # 清掉布料内部/白衣边缘的短排线；保留轮廓、接缝、受保护线，以及
+    # 头发上的细分束线（参考画法本就靠发丝线条塑形）。
+    if material_idx is not None and materials is not None:
+        prot = (np.zeros(candidate.shape, bool) if protected is None
+                else protected)
+        cloth_ids = [i for i, m in enumerate(materials)
+                     if m.get("role") in ("white", "cloth")]
+        for ids, min_px in ((cloth_ids, 12),):
+            if not ids:
+                continue
+            area = keep & np.isin(material_idx, ids) & ~(
+                outline | seams | prot)
+            lab_c, n_c = label(area, structure=CONNECT8)
+            for j in range(1, n_c + 1):
+                comp = lab_c == j
+                if comp.sum() >= min_px:
+                    continue
+                # A short fragment that touches another kept line belongs to
+                # a longer stroke; removing it would clip a legitimate line.
+                ys_c, xs_c = np.where(comp)
+                y0 = max(int(ys_c.min()) - 1, 0)
+                y1 = min(int(ys_c.max()) + 2, candidate.shape[0])
+                x0 = max(int(xs_c.min()) - 1, 0)
+                x1 = min(int(xs_c.max()) + 2, candidate.shape[1])
+                local = comp[y0:y1, x0:x1]
+                rest = keep[y0:y1, x0:x1] & ~local
+                if (binary_dilation(rest) & local).any():
+                    continue
+                keep &= ~comp
+
     # 回写时明确优先级，保证同一像素只属于一种线。
     kind = np.zeros(candidate.shape, dtype=np.uint8)
     kind[keep & structure] = STRUCTURE
@@ -119,33 +152,6 @@ def build_line_layers(candidate, fg, material_idx=None, materials=None,
                                  if protected is None else protected))
     return LineLayers(kind, final_protected, candidate.copy(),
                       ink_core.copy(), contrast_edge.copy())
-
-
-def rim_shadow(mask, fg, ratio=0.02):
-    """右侧轮廓内侧的暗带；裁切边与组内材质接缝不算轮廓。"""
-    ys, xs = np.where(mask)
-    if not len(ys):
-        return np.zeros(mask.shape, dtype=bool)
-    k = max(2, int(round(mask.shape[1] * ratio)))
-    sil = binary_closing(mask, structure=CONNECT8)
-    p = k + 2
-    dist = distance_transform_edt(np.pad(sil, p, mode="edge"))[p:-p, p:-p]
-    yy, xx = np.mgrid[0:mask.shape[0], 0:mask.shape[1]]
-    shadow = mask & (dist <= k) & (xx >= xs.mean())
-    fy, _ = np.where(fg)
-    cut = yy >= fy.max() - (k + 1)
-    right = np.full(mask.shape[0], -10 ** 6)
-    for y in range(mask.shape[0]):
-        row = np.where(mask[y])[0]
-        if row.size:
-            right[y] = row.max()
-    shadow &= (~cut) | (xx >= right[:, None] - k)
-    lab, n = label(shadow)
-    for i in range(1, n + 1):
-        comp = lab == i
-        if not (comp & ~cut).any():
-            shadow &= ~comp
-    return shadow
 
 
 def _hex_rgb(value):
@@ -231,7 +237,479 @@ def _tone(material, cfg, default):
     return int(value) if value is not None else None
 
 
-def build_cloth_layers(rgb, fg, material_idx, materials, config=None):
+def _layer_edge_band(shape, over, under, width):
+    """Take the seam from the solid core of over and expand into under.
+
+    Eroding the occluder first removes lace/serration tips, whose every tooth
+    would otherwise grow its own band and flood the neckline.
+    """
+    solid = binary_erosion(over, iterations=1)
+    if not solid.any():
+        solid = over
+    distance = distance_transform_edt(~solid)
+    return under & (distance <= max(float(width), 0.5))
+
+
+def _keep_large(mask, min_px):
+    """Keep only connected components of at least min_px pixels."""
+    if not mask.any():
+        return mask
+    lab, n = label(mask)
+    if n == 0:
+        return mask
+    sizes = np.bincount(lab.ravel())
+    sizes[0] = 0
+    return np.isin(lab, np.where(sizes >= max(int(min_px), 1))[0])
+
+
+def _despeckle_form(mid, deep, own, min_px):
+    """Merge nearby shadow specks into coherent blocks, then drop components
+    smaller than min_px.  Restores the v5->v8 rule (9px binary_closing +
+    fill_holes + area floor) that directional_bands does not apply, so cloth
+    volume shadow reads as clean masses instead of scattered dots.  `deep`
+    stays a subset of `mid` to preserve the tone hierarchy."""
+    st = np.ones((9, 9), bool)
+    mid = binary_fill_holes(binary_closing(mid, structure=st))
+    deep = binary_fill_holes(binary_closing(deep, structure=st))
+    mid = _keep_large(mid, min_px) & own
+    deep = _keep_large(deep, min_px) & own & mid
+    return mid, deep
+
+
+def _despeckle_occl(area, under, min_px, close=11):
+    """Bridge nearby occlusion specks into a continuous band, then drop
+    fragments smaller than min_px.  A serrated over-edge (e.g. sailor-collar
+    V) projects a dashed seam onto the receiver; without bridging this reads
+    as scattered dot shadow.  Closing bridges are clipped to `under` (the
+    receiver material) so they survive -- clipping back to the original
+    `area` would erase every bridge and leave the dashes intact."""
+    st = np.ones((close, close), bool)
+    merged = binary_fill_holes(binary_closing(area, structure=st))
+    return _keep_large(merged, min_px) & under
+
+
+def _seam_row(lum, y, lo, hi, ref, tol, torso):
+    """Darkest local minimum of one row inside a side window.
+
+    The painted arm/torso seam is a 1-2 px dip with bright pixels on both
+    sides; folds qualify too, so the caller tracks continuity.  Candidates
+    must sit on the blouse, which keeps the trace from wandering onto the
+    arm once the sleeve ends.  Returns None when no line is dark enough.
+    """
+    best, near = None, []
+    for x in range(int(lo) + 2, int(hi) - 2):
+        if not (torso[y, x] or torso[y, x - 1] or torso[y, x + 1]):
+            continue
+        v = float(lum[y, x])
+        if v > 0.90:
+            continue
+        side = max(lum[y, x - 3], lum[y, x + 3],
+                   lum[y, x - 2], lum[y, x + 2])
+        if side - v < 0.05:
+            continue
+        if best is None or v < best[0]:
+            best = (v, float(x))
+        if abs(x - ref) <= tol:
+            near.append((v, float(x)))
+    if near:
+        return min(near)[1]
+    return best[1] if best else None
+
+
+def _trace_seam(lum, lo, hi, y_anchor, ref, y_lo, y_hi, torso, tol=6.0):
+    """Track a seam line from the chest row outward in both directions."""
+    x = _seam_row(lum, y_anchor, lo, hi, ref, 8.0, torso)
+    if x is None:
+        return []
+    pts = {y_anchor: x}
+    for step in (1, -1):
+        px = x
+        rng = range(y_anchor + step, y_hi + 1 if step > 0 else y_lo - 1, step)
+        for y in rng:
+            nxt = _seam_row(lum, y, lo, hi, px, tol, torso)
+            if nxt is None:
+                break
+            px = nxt
+            pts[y] = px
+    return sorted(pts.items())
+
+
+def _straighten_seam(points, trim=3.0):
+    """Robust straight fit of traced seam points, rejecting fold outliers.
+
+    A straight guide is stable across the chest and waist; the raw trace can
+    jump onto sleeve folds for a few rows.
+    """
+    if len(points) < 4:
+        return []
+    ys = np.asarray([p[0] for p in points], dtype=float)
+    xs = np.asarray([p[1] for p in points], dtype=float)
+    keep = np.ones(len(ys), dtype=bool)
+    slope = 0.0
+    intercept = float(xs.mean())
+    for _ in range(2):
+        yy, xx = ys[keep], xs[keep]
+        if len(yy) < 4:
+            return []
+        pair = [(b - a) / (d - c) for i, (c, a) in enumerate(zip(yy, xx))
+                for d, b in list(zip(yy, xx))[i + 1:]]
+        slope = float(np.median(pair))
+        intercept = float(np.median(xx - slope * yy))
+        keep = np.abs(xs - (intercept + slope * ys)) <= trim
+    return [(int(y), float(intercept + slope * y))
+            for y in range(int(ys.min()), int(ys.max()) + 1)]
+
+
+def _clip_seam_rows(points, torso_mask):
+    """Clamp every seam row to the blouse extent so the guide never leaves it.
+
+    A straight fit extrapolates past the traced rows; without this clamp the
+    lower end can land on the arm even though the fit itself was clean.
+    """
+    out = []
+    for y, x in points:
+        row = np.flatnonzero(torso_mask[y])
+        if row.size < 2:
+            continue
+        out.append((y, float(np.clip(x, row.min() + 1.0, row.max() - 1.0))))
+    return out
+
+
+def _torso_limits(torso_mask, material_idx, materials, lum=None, anchor_y=None):
+    """Return torso side limits and sway axis with the arms excluded.
+
+    The blouse silhouette merges the sleeves into the torso component, so a
+    bounding-box ratio alone cuts through the arm.  When the luminance map is
+    available the painted arm/torso seam is traced per row and the band hugs
+    that contour instead of a straight ratio inset.  The sway axis is a robust
+    (Theil-Sen) fit of the silhouette midpoints, which stays upright even when
+    one arm is occluded by hair.
+    """
+    ys, xs = np.nonzero(torso_mask)
+    x0, x1 = float(xs.min()), float(xs.max())
+    y0, y1 = float(ys.min()), float(ys.max())
+    width = max(x1 - x0, 1.0)
+    height = max(y1 - y0, 1.0)
+
+    inset = 0.16
+    ratio = {"left": x0 + inset * width, "right": x1 - inset * width,
+             "source": "ratio"}
+
+    seam_left, seam_right = [], []
+    if lum is not None:
+        y_a = int(round(anchor_y if anchor_y is not None
+                        else y0 + 0.45 * height))
+        # The arm/torso seam only exists around the ribcage; beyond it the
+        # sleeve merges into the arm and the trace would wander onto the
+        # limb.  Keep the guide near the chest row.
+        span = 0.22 * height
+        rows_lo = max(int(y0), int(round(y_a - span)))
+        rows_hi = min(int(y1), int(round(y_a + span)))
+        pad = 0.06 * width
+        left = _trace_seam(lum, x0 + 0.04 * width, x0 + 0.44 * width,
+                           y_a, ratio["left"], rows_lo, rows_hi, torso_mask)
+        right = _trace_seam(lum, x1 - 0.44 * width, x1 - 0.04 * width,
+                            y_a, ratio["right"], rows_lo, rows_hi, torso_mask)
+        need = max(4, int(0.35 * (rows_hi - rows_lo)))
+        if len(left) >= need and len(right) >= need:
+            left = _clip_seam_rows(_straighten_seam(left), torso_mask)
+            right = _clip_seam_rows(_straighten_seam(right), torso_mask)
+        if left and right:
+            left = [(y, float(np.clip(x, ratio["left"] - pad,
+                                      ratio["left"] + 0.10 * width)))
+                    for y, x in left]
+            right = [(y, float(np.clip(x, ratio["right"] - 0.10 * width,
+                                       ratio["right"] + pad)))
+                     for y, x in right]
+            if 0.25 * width < (np.median([p[1] for p in right])
+                               - np.median([p[1] for p in left])):
+                ratio = {**ratio, "source": "seam"}
+                seam_left, seam_right = left, right
+
+    mids = []
+    low = int(y0 + 0.08 * height)
+    high = int(y0 + 0.80 * height) + 1
+    for y in range(low, high, 2):
+        row = np.flatnonzero(torso_mask[y])
+        if row.size == 0 or (row.max() - row.min()) < 0.5 * width:
+            continue
+        mids.append((float(y), float(row.min() + row.max()) * 0.5))
+    slope = 0.0
+    intercept = float(xs.mean())
+    if len(mids) >= 6:
+        pts = np.asarray(mids)
+        pair = [(b[1] - a[1]) / (b[0] - a[0])
+                for i, a in enumerate(pts) for b in pts[i + 1:]]
+        slope = float(np.clip(np.median(pair), -0.35, 0.35))
+        intercept = float(np.median(pts[:, 1] - slope * pts[:, 0]))
+    return {**ratio, "slope": slope, "intercept": intercept,
+            "width": width, "height": height,
+            "seam_left": seam_left, "seam_right": seam_right}
+
+
+def _bust_geometry(white_mask, body, material_idx, materials, lum=None):
+    """Locate bust lobes from shoulder/waist anatomy, not blouse height."""
+    bust = (body or {}).get("bust") or {}
+    size = int(bust.get("size", 0) or 0)
+    if size < 1 or not white_mask.any():
+        return {"size": size, "lobes": []}
+    lab_w, n_w = label(white_mask)
+    sizes_w = np.bincount(lab_w.ravel())
+    sizes_w[0] = 0
+    torso_mask = lab_w == int(sizes_w.argmax())
+    x0, y0, x1, y1 = _bbox(torso_mask)
+    width = max(x1 - x0, 1.0)
+    height = max(y1 - y0, 1.0)
+    shoulder_y = y0
+    waist_y = y0 + 0.78 * height
+    near_white = binary_dilation(torso_mask, iterations=4)
+    torso_area = int(torso_mask.sum())
+    for i, material in enumerate(materials):
+        if material.get("role") != "cloth":
+            continue
+        cloth = material_idx == i
+        lab_c, n_c = label(cloth)
+        for component_id in range(1, n_c + 1):
+            component = lab_c == component_id
+            area = int(component.sum())
+            # Skip background-scale regions that only graze the torso.
+            if area > 3 * torso_area:
+                continue
+            if not (component & near_white).any():
+                continue
+            top = float(np.where(component)[0].min())
+            if y0 - 0.10 * height <= top < y0 + 0.35 * height:
+                shoulder_y = min(shoulder_y, top)
+            elif top > y0 + 0.55 * height:
+                waist_y = min(waist_y, top)
+    waist_y = max(waist_y, shoulder_y + 0.45 * (y1 - shoulder_y))
+    torso = (body or {}).get("torso") or {}
+    bust_ratio = 0.76 if torso.get("pose") == "lean_forward" else 0.57
+    center_y = shoulder_y + bust_ratio * (waist_y - shoulder_y)
+
+    frame = _torso_limits(torso_mask, material_idx, materials, lum,
+                          anchor_y=center_y)
+    lean = float(torso.get("lean", 0.0) or 0.0)
+
+    # Head axis: one vertical guide from the top of the head to the shoulders.
+    head_x, head_top = None, None
+    skin_ids = [i for i, m in enumerate(materials)
+                if m.get("role") == "skin"]
+    if skin_ids:
+        skin = np.isin(material_idx, skin_ids)
+        head = skin[:int(shoulder_y)]
+        if head.sum() >= 50:
+            head_x = float(np.nonzero(head)[1].mean())
+            rows = np.nonzero(head.any(axis=1))[0]
+            head_top = float(rows.min()) if rows.size else float(shoulder_y)
+
+    def band_at(y):
+        if frame["seam_left"]:
+            left = np.interp(y, [p[0] for p in frame["seam_left"]],
+                             [p[1] for p in frame["seam_left"]])
+            right = np.interp(y, [p[0] for p in frame["seam_right"]],
+                              [p[1] for p in frame["seam_right"]])
+            return float(left), float(right)
+        return frame["left"], frame["right"]
+
+    left_c, right_c = band_at(center_y)
+    torso_w = max(right_c - left_c, 4.0)
+    margin = max(1.5, 0.03 * torso_w)
+    if frame["seam_left"]:
+        # The traced seam midline is the body axis; the face midline sits a
+        # few pixels right of it on a contrapposto pose.
+        anchor_x = 0.5 * (left_c + right_c)
+        center_source = "seam"
+    else:
+        # Without a seam, the chest hangs under the head, so the face midline
+        # is the stable anchor; silhouette midpoints are biased by hair.
+        if head_x is not None:
+            anchor_x = head_x
+            center_source = "face"
+        else:
+            anchor_x = frame["intercept"] + frame["slope"] * center_y
+            center_source = "silhouette"
+    center_x = anchor_x + lean * torso_w * 0.25
+    center_x = float(np.clip(center_x, left_c + margin, right_c - margin))
+
+    separation = float(np.clip(bust.get("separation", 0.42), 0.2, 0.95))
+    sep_px = min(separation * torso_w, max(0.0, torso_w - 2.0 * margin))
+    d = sep_px * 0.5
+    # The band tilts with the sway axis, so the chest line runs perpendicular
+    # to the body and the lobe on the lower side of the lean rides lower.
+    # Equal cy values are what made the pair look level on a tilted torso.
+    slope = float(frame["slope"])
+    norm = float(np.hypot(1.0, slope))
+    ux, uy = 1.0 / norm, -slope / norm
+    centers = [(center_x - d * ux, center_y - d * uy),
+               (center_x + d * ux, center_y + d * uy)]
+    # Fill the band out to the seam so each lobe reads as a body part rather
+    # than a small stamp floating inside the torso.
+    gap = max(1.2, 0.015 * torso_w)
+    room = min(min(cx - band_at(cy)[0], band_at(cy)[1] - cx)
+               for cx, cy in centers)
+    rx = max(3.0, (room - gap) * min(1.0, 0.85 + 0.075 * size))
+    ry = max(4.0, rx * (0.80 + 0.04 * size))
+    half = 0.5 * torso_w
+    lobes = [(cx, cy, rx, ry) for cx, cy in centers]
+    return {
+        "size": size, "lobes": lobes,
+        "shoulder_y": round(shoulder_y, 2), "waist_y": round(waist_y, 2),
+        "center_y": round(center_y, 2), "torso_ratio": bust_ratio,
+        "center_x": round(center_x, 2),
+        "torso_left": round(center_x - half, 2),
+        "torso_right": round(center_x + half, 2),
+        "torso_width": round(torso_w, 2),
+        "sway_deg": round(float(np.degrees(np.arctan(frame["slope"]))), 2),
+        "slope": float(frame["slope"]),
+        "seam_left": frame["seam_left"],
+        "seam_right": frame["seam_right"],
+        "arm_source": frame["source"],
+        "center_source": center_source,
+        "head_x": None if head_x is None else round(head_x, 2),
+        "head_top": None if head_top is None else round(head_top, 2),
+    }
+
+
+def body_guide(material_idx, materials, body, lum):
+    """Measure the figure once, before any shading pass.
+
+    Returns the head axis, shoulder/waist heights, torso band and bust lobes.
+    Later passes shade against this same figure instead of re-deriving the
+    body per garment, so the anatomy is fixed before colours are laid down.
+    """
+    white_ids = [i for i, m in enumerate(materials)
+                 if m.get("role") == "white"]
+    if not body or not white_ids:
+        return {"size": 0, "lobes": [], "mask_id": None}
+    mask_id = max(white_ids, key=lambda i: int((material_idx == i).sum()))
+    guide = _bust_geometry(material_idx == mask_id, body, material_idx,
+                           materials, lum)
+    guide["mask_id"] = mask_id
+    return guide
+
+
+def _head_occluder(material_idx, materials, guide):
+    """The head mass above the shoulder line, clipped to the skull axis.
+
+    Hair spreads far wider than the skull; projecting every lock produced a
+    gray band running parallel to the strands on the lit side (v10.2 ②).  The
+    skull width comes from the head skin so the projection keeps a head-scale
+    silhouette instead of the whole hair mass.
+    """
+    guide = guide or {}
+    shoulder_y = guide.get("shoulder_y")
+    if shoulder_y is None:
+        return None
+    soft = [i for i, m in enumerate(materials)
+            if m.get("role") in ("hair", "skin")]
+    if not soft:
+        return None
+    rows = np.arange(material_idx.shape[0])[:, None]
+    cols = np.arange(material_idx.shape[1])[None, :]
+    above = rows < float(shoulder_y)
+    mass = np.isin(material_idx, soft) & above
+    if not mass.any():
+        return None
+    skin_ids = [i for i, m in enumerate(materials) if m.get("role") == "skin"]
+    skin = np.isin(material_idx, skin_ids) & above
+    head_x, head_top = guide.get("head_x"), guide.get("head_top")
+    if skin.sum() >= 50:
+        xs = np.nonzero(skin)[1]
+        head_w = float(xs.max() - xs.min() + 1)
+        if head_x is None:
+            head_x = float(xs.mean())
+    else:
+        xs = np.nonzero(mass)[1]
+        head_w = 0.5 * float(xs.max() - xs.min() + 1)
+        if head_x is None:
+            head_x = float(xs.mean())
+    if head_top is None:
+        head_top = float(np.nonzero(mass)[0].min())
+    half = 0.5 * head_w
+    mass &= ((cols >= head_x - half) & (cols <= head_x + half)
+             & (rows >= head_top))
+    return mass if mass.any() else None
+
+
+def _head_cast_depth(head, guide):
+    """Projection length derived from head width and shoulder span.
+
+    The fixed W/32 depth was unrelated to anatomy; a low key light throws a
+    shadow about one head radius long, stretched slightly by the shoulders.
+    """
+    xs = np.nonzero(head)[1]
+    head_w = float(xs.max() - xs.min() + 1)
+    torso_w = float((guide or {}).get("torso_width") or head_w)
+    return float(np.clip(0.30 * head_w + 0.06 * torso_w, 4.0, 0.8 * head_w))
+
+
+def _run_widths(mask):
+    """Width of the horizontal run containing each pixel (0 outside)."""
+    width = mask.shape[1]
+    cols = np.arange(width)[None, :]
+    left = np.zeros_like(mask)
+    left[:, 0] = mask[:, 0]
+    left[:, 1:] = mask[:, 1:] & ~mask[:, :-1]
+    right = np.zeros_like(mask)
+    right[:, -1] = mask[:, -1]
+    right[:, :-1] = mask[:, :-1] & ~mask[:, 1:]
+    start = np.maximum.accumulate(np.where(left, cols, 0), axis=1)
+    end = np.minimum.accumulate(
+        np.where(right, cols, width)[:, ::-1], axis=1)[:, ::-1]
+    return end - start
+
+
+def _form_field_break(field, base, material_idx, min_run=12):
+    """Max field step at a material break whose cross-section is unchanged."""
+    solid = shading.silhouette(base)
+    widths = _run_widths(solid)
+    jump = np.abs(np.diff(field, axis=0))
+    breaks = (base[:-1] & base[1:]
+              & (material_idx[:-1] != material_idx[1:])
+              & (np.abs(widths[:-1] - widths[1:]) <= 1)
+              & (widths[:-1] >= min_run))
+    return float(jump[breaks].max()) if breaks.any() else 0.0
+
+
+def _bust_form(mask, light, body, material_idx, materials, lum=None,
+               guide=None, field=None):
+    """Merge torso, bust spheres and their cast shadows into one field."""
+    model = guide if guide else _bust_geometry(
+        mask, body, material_idx, materials, lum)
+    field = (np.array(field, dtype=np.float64) if field is not None
+             else shading.cylindrical_field(mask, light))
+    yy, xx = np.mgrid[0:mask.shape[0], 0:mask.shape[1]]
+    source = np.zeros_like(mask)
+    lower_edge = np.zeros_like(mask)
+    size = model["size"]
+    for cx, cy, rx, ry in model["lobes"]:
+        lobe_field = shading.ellipsoid_field(
+            mask, cx, cy, rx, ry, light, terminator=0.30 + 0.08 * size)
+        field = np.maximum(field, lobe_field)
+        ellipse = (((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2) <= 1.0
+        source |= ellipse & mask
+        lower_edge |= ellipse & mask & (yy >= cy + 0.25 * ry)
+    if source.any():
+        mean_ry = float(np.mean([lobe[3] for lobe in model["lobes"]]))
+        near = shading.cast_shadow(source, mask, light, depth=0.55 * mean_ry)
+        far = shading.cast_shadow(source, mask, light, depth=1.15 * mean_ry)
+        contact = shading.cast_shadow(
+            lower_edge, mask, light, depth=max(2.0, 0.12 * mean_ry))
+        # Two displaced projections form the soft abdominal penumbra; the
+        # short under-bust projection is the hard contact/umbra edge.
+        field[near | far] = np.maximum(field[near | far], 0.46)
+        field[contact] = np.maximum(field[contact], 0.86)
+        model["cast_pixels"] = int((near | far).sum())
+        model["contact_pixels"] = int(contact.sum())
+    mid, deep, _ = shading.field_bands(
+        field, mask, thresholds=(0.35, 0.82), min_px=8)
+    model["form_pixels"] = int(mid.sum())
+    model["deep_pixels"] = int(deep.sum())
+    return mid, deep, model
+
+
+def build_cloth_layers(rgb, fg, material_idx, materials, config=None, body=None):
     """构建 base/form/fold/occlusion/highlight，并返回材质表面覆盖层。"""
     config = config or {}
     shape = fg.shape
@@ -249,8 +727,21 @@ def build_cloth_layers(rgb, fg, material_idx, materials, config=None):
     lum = (0.299 * rgb[..., 0] + 0.587 * rgb[..., 1]
            + 0.114 * rgb[..., 2]) / 255.0
     smooth_lum = gaussian_filter(lum, 2.0)
+    light = shading.light_vector(config.get("light", "upper-left"))
+    # Anatomy first: the head axis, torso band and bust guide are measured
+    # before any garment shading, so every material shares one figure.
+    guide = body_guide(material_idx, materials, body, lum)
+    stats["body"] = guide
 
-    # 体积暗面沿用既有组级轮廓规则，不沿同组接缝生成暗带。
+    # One body-space field for the whole garment silhouette.  Cross-sections
+    # must not restart at a material boundary: a short skirt run under the
+    # blouse hem would otherwise become a bright beige wedge (v10.2 ③).
+    body_field = shading.cylindrical_field(base, light)
+    stats["form_field_break"] = _form_field_break(
+        body_field, base, material_idx)
+
+    # Body-space volume field: horizontal cylinder sections remain continuous
+    # through material holes, then the field is clipped to each garment.
     groups = {}
     for i, material in enumerate(materials):
         if material.get("role") == "cloth":
@@ -259,29 +750,38 @@ def build_cloth_layers(rgb, fg, material_idx, materials, config=None):
         union = np.isin(material_idx, members)
         if not union.any():
             continue
-        shadow = rim_shadow(union, fg)
-        form |= shadow
+        mid, deep, _ = shading.field_bands(
+            body_field, union, thresholds=(0.35, 0.82), min_px=20)
         for i in members:
-            tones["form"][material_idx == i] = len(materials[i].get("refs", [])) - 1
+            own = material_idx == i
+            m_mid, m_deep = _despeckle_form(
+                own & mid, own & deep, own,
+                max(20, int(own.sum() * 0.02)))
+            form |= m_mid | m_deep
+            last = len(materials[i].get("refs", [])) - 1
+            tones["form"][m_mid] = min(1, last)
+            tones["form"][m_deep] = min(2, last)
 
-    # 白衣既有的大块第二色归入 form，保证迁移前后不丢影。
-    for i, material in enumerate(materials):
-        refs = material.get("refs", [])
-        if material.get("role") != "white" or len(refs) < 2:
-            continue
+    white_ids = [i for i, m in enumerate(materials) if m.get("role") == "white"]
+    body_white_i = guide.get("mask_id")
+    for i in white_ids:
+        material = materials[i]
         mask = material_idx == i
-        lab, n = label(mask)
-        big = np.zeros(shape, dtype=bool)
-        for j in range(1, n + 1):
-            comp = lab == j
-            if comp.sum() >= 200:
-                big |= comp
-        ref0, ref1 = _hex_rgb(refs[0]), _hex_rgb(refs[1])
-        d0 = ((rgb.astype(np.float32) - ref0) ** 2).sum(-1)
-        d1 = ((rgb.astype(np.float32) - ref1) ** 2).sum(-1)
-        white_form = big & (d1 < d0)
-        form |= white_form
-        tones["form"][white_form] = 1
+        if not mask.any():
+            continue
+        if i == body_white_i:
+            mid, deep, _ = _bust_form(
+                mask, light, body, material_idx, materials, lum, guide,
+                field=body_field)
+        else:
+            mid, deep, _ = shading.field_bands(
+                body_field, mask, thresholds=(0.35, 0.82), min_px=40)
+        mid, deep = _despeckle_form(
+            mid, deep, mask, max(40, int(mask.sum() * 0.02)))
+        form |= mid | deep
+        last = len(material.get("refs", [])) - 1
+        tones["form"][mid] = min(1, last)
+        tones["form"][deep] = min(2, last)
 
     by_id = {m["id"]: i for i, m in enumerate(materials)}
     for cfg in config.get("folds", []):
@@ -307,21 +807,68 @@ def build_cloth_layers(rgb, fg, material_idx, materials, config=None):
         over_i = by_id[cfg["over"]]
         under = material_idx == under_i
         over = material_idx == over_i
-        if cfg.get("path"):
+        width = float(cfg.get("width", 2))
+        if cfg.get("derive") == "layer_edge":
+            candidate = _layer_edge_band(shape, over, under, width)
+        elif cfg.get("path"):
             points = _points(cfg["path"], _bbox(under))
-            candidate = _stroke(shape, points, float(cfg.get("width", 2)), "seam")
+            candidate = _stroke(shape, points, width, "seam")
         else:
             candidate = binary_dilation(
-                over, iterations=max(1, int(round(cfg.get("width", 2)))))
+                over, iterations=max(1, int(round(width))))
         area = _clean_area(candidate & under)
+        # De-speckle the projected seam (see _despeckle_occl): bridge dashed
+        # collar/cuff projections into clean bands and drop isolated specks.
+        area = _despeckle_occl(
+            area, under, max(20, int(under.sum() * 0.01)), close=11)
         tone = _tone(materials[under_i], cfg,
                      len(materials[under_i].get("refs", [])) - 1)
         occlusion |= area
         tones["occlusion"][area] = tone
         stats["occlusions"].append({
             "over": cfg["over"], "under": cfg["under"],
+            "derive": cfg.get("derive") or ("path" if cfg.get("path")
+                                            else "dilate"),
             "pixels": int(area.sum()), "tone": tone,
         })
+
+    # The head is the only occluder above the shoulders.  Hair locks beside the
+    # face belong to the head mass but must not project a band down the torso;
+    # the cast is clipped to the skull axis and to the back-lit half so it can
+    # only land on the collar and the upper chest (refs/proportions 02/08/14/
+    # 18/19).  The collar→blouse chain is still owned by the config occlusions
+    # above, so the head layer is not projected a second time.
+    head = _head_occluder(material_idx, materials, guide)
+    receiver_ids = set(white_ids)
+    for members in groups.values():
+        receiver_ids.update(members)
+    if head is not None and receiver_ids:
+        depth = _head_cast_depth(head, guide)
+        cast = shading.cast_shadow(head, base, light, depth=depth)
+        yy, xx = np.mgrid[0:shape[0], 0:shape[1]]
+        center_x = float(guide["center_x"])
+        shoulder_y = float(guide["shoulder_y"])
+        back_lit = ((xx >= center_x) & (yy >= shoulder_y - 1.0))
+        # 1px contact umbra next to the head, soft mid tone further out.
+        contact = (binary_dilation(head, iterations=1) & base & back_lit)
+        cast &= back_lit
+        for i in sorted(receiver_ids):
+            under = material_idx == i
+            area = _despeckle_occl(
+                cast & under, under, max(12, int(under.sum() * 0.005)), close=5)
+            if not area.any():
+                continue
+            ours = contact & area
+            last = len(materials[i].get("refs", [])) - 1
+            occlusion |= area
+            tones["occlusion"][area] = min(1, last)
+            tones["occlusion"][ours] = min(2, last)
+            stats["occlusions"].append({
+                "over": "head", "under": materials[i]["id"],
+                "derive": "head_cast", "depth": round(depth, 2),
+                "pixels": int(area.sum()),
+                "contact_pixels": int(ours.sum()), "tone": min(1, last),
+            })
 
     for cfg in config.get("highlights", []):
         i = by_id[cfg["material"]]
@@ -340,6 +887,20 @@ def build_cloth_layers(rgb, fg, material_idx, materials, config=None):
         tones["highlight"][area] = tone
         stats["highlights"].append({"material": cfg["material"],
                                     "pixels": int(area.sum()), "tone": tone})
+
+    # 白衣紧贴脸/颈/发的边缘保持白色；灰绿贴脸会被误读成脸部阴影。
+    # Only the volume band is cleared here.  The contact shadow belongs to the
+    # occlusion layer and must survive, otherwise a white gap appears between
+    # the head and its cast shadow (v10.2 ②).
+    white_ids = [i for i, m in enumerate(materials)
+                 if m.get("role") == "white"]
+    soft_ids = [i for i, m in enumerate(materials)
+                if m.get("role") in ("skin", "hair")]
+    if white_ids and soft_ids:
+        near_soft = binary_dilation(np.isin(material_idx, soft_ids),
+                                    iterations=3)
+        white_edge = np.isin(material_idx, white_ids) & near_soft
+        form &= ~white_edge
 
     surface, surface_tones = _build_surfaces(
         materials, by_id, material_idx, fold, config.get("materials", {}),

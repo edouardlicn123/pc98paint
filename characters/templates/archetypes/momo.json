@@ -1,0 +1,43 @@
+{
+  "id": "momo",
+  "name": "桃（粉发卷发）",
+  "ref": "25",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "sailor",
+  "body": {
+    "heads": 6.2,
+    "head_height_px": 74,
+    "shoulder_ratio": 1.4,
+    "waist_ratio": 0.62,
+    "face_width_ratio": 0.66,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "round",
+    "eye_size": "large",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": ["freckles", "blush"]
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "wavy",
+    "tie": "none",
+    "style": "pink long wavy hair with oversized golden-yellow bows",
+    "color_family": "pink",
+    "reflection": "ring"
+  }
+}

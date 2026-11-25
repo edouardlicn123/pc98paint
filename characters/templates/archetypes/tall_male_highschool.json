@@ -1,0 +1,42 @@
+{
+  "id": "tall_male_highschool",
+  "name": "高个高中男生",
+  "ref": "11",
+  "gender": "male",
+  "age_group": "teen",
+  "outfit_type": "shirt",
+  "body": {
+    "heads": 7.5,
+    "head_height_px": 66,
+    "shoulder_ratio": 2.1,
+    "face_width_ratio": 0.76,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "hands_on_hips"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "medium",
+    "brows": "thin_flat",
+    "nose": "short_vertical",
+    "mouth": "upturned",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "spiky",
+    "tie": "none",
+    "style": "magenta short spiky hair",
+    "color_family": "magenta",
+    "reflection": "block"
+  }
+}

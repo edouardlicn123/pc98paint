@@ -1,0 +1,76 @@
+{
+  "id": "sakura",
+  "name": "樱（粉发绿眼水手服）",
+  "template": {
+    "archetype": "momo",
+    "outfit": "momo_sailor"
+  },
+  "gender": "female",
+  "proportions": {
+    "heads": 6.2,
+    "head_width_ratio": [0.18, 0.24],
+    "eye_width_ratio": [0.4, 0.5],
+    "nose_px": [1, 2],
+    "mouth_px": [1, 3]
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "large round green eyes",
+    "eye_size": "large",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "short soft smile",
+    "markings": ["freckles", "blush"]
+  },
+  "hair": {
+    "color": "salmon pink",
+    "shadow_hue": "rose",
+    "highlight": "cream pink",
+    "bangs_blocks": 4,
+    "length": "long curly",
+    "style": "voluminous wavy curls, two oversized golden-yellow ribbon bows on both sides",
+    "reflection": "ring"
+  },
+  "outfit": {
+    "type": "sailor",
+    "base": "white short-sleeve sailor blouse",
+    "collar": "brown sailor collar with double white stripes",
+    "accent": "matching cuff stripes, four round front buttons, small chest pocket, light waist band",
+    "bottom": "brown pleated knee-length skirt"
+  },
+  "materials": [
+    {"id": "skin", "role": "skin", "refs": ["#ffddcc", "#d99a7e", "#a96650"], "paint": "bands3"},
+    {"id": "hair", "role": "hair", "refs": ["#ffffff", "#f7b8a8", "#e07a8a", "#8f4a52", "#6b3540"], "paint": "hair_ring"},
+    {"id": "blouse", "role": "white", "refs": ["#ffffff", "#adbca9", "#6d7b65"], "paint": "white"},
+    {"id": "collar", "role": "cloth", "refs": ["#9a8a7a", "#6e5f52", "#4a3f36"], "paint": "rim"},
+    {"id": "skirt", "role": "cloth", "refs": ["#9a8a7a", "#6e5f52", "#4a3f36"], "paint": "rim"},
+    {"id": "bow", "role": "accent", "refs": ["#e8b73a", "#a87a1e"], "paint": "flat2"},
+    {"id": "iris", "role": "eye", "refs": ["#2f8f86", "#1f5f5a"], "paint": "flat"}
+  ],
+  "palette": {
+    "skin": ["#ffddcc", "#d99a7e", "#a96650"],
+    "hair": ["#ffffff", "#f7b8a8", "#e07a8a", "#8f4a52", "#6b3540"],
+    "white": ["#ffffff", "#adbca9", "#6d7b65"],
+    "taupe": ["#9a8a7a", "#6e5f52", "#4a3f36"],
+    "taupe_dark": ["#8f7f70", "#5a4a40", "#3a2f28"],
+    "accent": ["#e8b73a", "#a87a1e"],
+    "eye": ["#2f8f86", "#1f5f5a"]
+  },
+  "render": {
+    "sprite_h": 640,
+    "sprite_w_max": 300,
+    "line_darken": 0.55,
+    "dither_density": 0.0,
+    "dither_band": 2,
+    "palette_max": 256,
+    "tier": "half",
+    "expression": "neutral",
+    "camera": "eye-level"
+  },
+  "checks": {
+    "neutral_gray_max": 0.06,
+    "outline_min": 0.65,
+    "dark_chroma_min": 12,
+    "hair_tones": [3, 12]
+  }
+}

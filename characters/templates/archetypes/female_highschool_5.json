@@ -1,0 +1,42 @@
+{
+  "id": "female_highschool_5",
+  "name": "女高中生5",
+  "ref": "21",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "cardigan",
+  "body": {
+    "heads": 6.5,
+    "head_height_px": 76,
+    "shoulder_ratio": 1.35,
+    "face_width_ratio": 0.58,
+    "bust": {
+      "size": 1,
+      "center_y_head": 1.8,
+      "separation": 0.38,
+      "under_boob_y_head": 2.1,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "large_round",
+    "eye_size": "large",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "spiky",
+    "tie": "none",
+    "style": "green short spiky hair",
+    "color_family": "green",
+    "reflection": "ring"
+  }
+}

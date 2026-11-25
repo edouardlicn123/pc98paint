@@ -4,8 +4,23 @@
 
 设计文档：[衣服结构与体型阴影设计](./衣服结构与体型阴影设计.md)（garment_layers 层叠、layer_edge 算法、bust 弧几何映射、body 透传路径）——T7/T8 实现的依据。
 
+## 完成记录（2026-11-23）
+
+全部 11 项已落地并通过回归：
+
+- 测量：`_work/scratch/bust_analysis.json`（24 条）+ `bust_analysis.md`；生成脚本 `_work/scratch/gen_templates.py`。
+- 模板：`characters/templates/archetypes/` 24 个、`outfits/` 24 个、`index.json`；测试夹具 `tools/tachie/test_fixtures/templates/`（1 原型 + 2 变体）。
+- 代码：`tools/common/template.py`、`schema.py` 扩展、`prompt.py` 参数化、`drawing.py`（layer_edge + bust 弧）、`matregion.py`/`asset3.py`/`pipeline.py` 透传 `body` 与 `resolved_template`。
+- 测试：`tools/common/test_template.py`（11 项）、`tools/tachie/test_body_shading.py`（7 项）；全量 tachie 37 项 + common 11 项全部 OK。
+- 端到端：momo 自动解析为 `female_highschool_4 / female_highschool_4_sailor`，lint PASS（`white_purity 0.8198`）；显式模板 demo `output/momo_body_demo_half.png` lint PASS（`white_purity 0.8146`）；大胸 demo `momo_full_demo` lint PASS（`0.8080`），平胸 `momo_flat_demo` PASS（`0.8198`）。
+- 视觉证据：`_work/scratch/body_shading_demo/collar_layer_edge.png`（领影贴合接缝）、`bust_flat_vs_full.png`（平胸/大胸对比）、`momo_bust_compare.png`（真实立绘胸弧）。
+- 文档：`docs/03` §14.1、`docs/06` §2.8、`AGENTS.md` 文档/工具登记与双平台环境说明。
+- 复核订正（2026-11-23，用户反馈后）：02 萝莉由 `size=0` 改为 `size=2`（参考图可见胸廓外扩与下胸暗带），发长 `short→long`、瞳色 `magenta→teal`、补黄滚边与脸颊雀斑；同步模板、`docs/03` §14.1、`docs/05`、`docs/06`。
+- 新阴影管线（2026-11-23，强制）：渲染配置改为**模板优先**（face/hair 保留实例）；momo 迁移到 `momo / momo_sailor`；白衣三档灰绿 + 大块结构影、头发五档 + 白高光、皮肤三档硬影、角色关闭 Bayer 点阵。重出 `output/momo_newpipeline_half.png`，10 项 lint 全 PASS。
+- 阴影误判收口（2026-11-23，用户逐条反馈后）：① 皮肤暗面改为发际投影 + 单连通块轮廓 + 6% 低分位，去掉半脸分位阴影；② 2×2 开闭 + 连通块下限去除下巴点状影；③ 白衣暗带只取外轮廓 1.5%，领下 2px，胸弧面积上限 2%；④ 胸弧按衣身 58% 高度重定位，形成可见 under-boob 线；⑤ 双眼椭圆内暖白与下半身两侧暖白块归回皮肤，修复手部填白；贴脸 3px 白衣保持白色。全部测试 13 + 37 OK。
+
 ## Task 1: 实测 24 张参考图的胸围/体型数据
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: None
 - **Description**:
@@ -19,7 +34,7 @@
 - **Notes**: 男性/平胸不下胸围线时 `under_boob_y_head` 记 `null`。测量脚本放 `_work/scratch/`（调试区），不必登记 AGENTS.md。
 
 ## Task 2: 创建模板目录与 24 个原型模板
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 1, Task 4
 - **Description**:
@@ -33,7 +48,7 @@
 - **Notes**: 词汇严格沿用 AGENTS.md 速查表与 `docs/05`/`docs/06`，不发明新分类。
 
 ## Task 3: 创建着装变体模板 + index 注册 + 多变体挂载证明
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 2
 - **Description**:
@@ -48,7 +63,7 @@
 - **Notes**: 本阶段不虚构常服设计；用户后续提示追加常服时只需新增 outfit 文件 + 改 index，不动原型。
 
 ## Task 4: schema 扩展与模板字段校验
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: None
 - **Description**:
@@ -62,7 +77,7 @@
 - **Notes**: 与 Task 1 可并行；先定字段契约，Task 2/3 按契约填数据。
 
 ## Task 5: pipeline 模板解析（深合并 + 自动选择）
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 2, Task 4
 - **Description**:
@@ -76,7 +91,7 @@
 - **Notes**: 深合并用字典递归覆盖；列表字段（materials/folds）整体替换不拼接，避免重复。
 
 ## Task 6: prompt.py 体型 token 参数化
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 5
 - **Description**:
@@ -89,7 +104,7 @@
 - **Notes**: 不改变 prompt 的机位/表情/高光硬约束。
 
 ## Task 7: drawing.py 结构派生遮挡 derive=layer_edge
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 4
 - **Description**:
@@ -102,7 +117,7 @@
 - **Notes**: 边界距离用 `scipy.ndimage.distance_transform_edt` 对 over 掩码计算，取 under 内距离 ≤ width 的像素。算法细节见[设计文档 §4](./衣服结构与体型阴影设计.md)。
 
 ## Task 8: drawing.py 胸围驱动衣物阴影（under-boob arc + lean 偏移）
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 7
 - **Description**:
@@ -115,7 +130,7 @@
 - **Notes**: bust 几何映射用白衣材质 bbox 的归一化坐标（与现有 folds/occlusion 的 `_points` 同体系），保证跨角色/姿势自适应。弧参数、size 档位触发、torso.lean 偏移见[设计文档 §5](./衣服结构与体型阴影设计.md)。
 
 ## Task 9: 全量单元测试回归
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 5, Task 7, Task 8
 - **Description**:
@@ -127,7 +142,7 @@
 - **Notes**: 各实现任务的 TR 已在本任务汇总验证；实现时同步写测试，本任务做最终全量回归。
 
 ## Task 10: 端到端验证（momo 回归 + 大胸/平胸对比）
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: high
 - **Depends On**: Task 6, Task 8
 - **Description**:
@@ -142,7 +157,7 @@
 - **Notes**: 若大胸/平胸例无现成高清 source，用 `--drawing-debug` 输出的 cloth 层叠加图做结构验证即可，不必强行端到端出成品；但 momo 必须端到端。
 
 ## Task 11: 文档更新
-- **Status**: `pending`
+- **Status**: `completed`
 - **Priority**: low
 - **Depends On**: Task 1, Task 2, Task 3
 - **Description**:
@@ -154,3 +169,18 @@
   - `rule` TR-11.1：`docs/03` 含胸围小节且有 24 原型数据表。证据：文件检视。
   - `rule` TR-11.2：`docs/06` 含三层着装模板说明。证据：文件检视。
 - **Notes**: 不改动文档既有结论，只新增小节。
+
+## Addendum: 阴影复核（2026-11-23，v5 → v8）
+- **Status**: `completed`
+- **修复项**：
+  1. 脸部连通块改为以**膨胀后的虹膜**为锚（虹膜是独立材质，`skin ∩ iris` 恒为空，旧逻辑永远选不到脸），额带/下颌带真正落位。
+  2. `white_seed` 之后二次执行面部椭圆回收，清除鼻/颊高光被误染成白衣留下的白斑。
+  3. 白衣中/深面参数改为 sigma 8 / p30 / p8 / min_px 300 / 9px 开闭 + 填洞，去掉碎斑。
+  4. 胸下暗带改为**受光背面单侧月牙**（厚中薄端，tone 1，面积上限 2.5%），不再出现左右两条“微笑”弧。
+  5. 线层清理只作用于布料内部（<12px、8 邻域、邻接长线豁免）；头发发丝保留，避免误删合法发丝。
+- **验证**：`pipeline.py` 11 项 lint 全 PASS；`tools/tachie` 37 tests OK；`tools/common` 13 tests OK；baseline 更新为 skin 4806 / hair 23475 / blouse 15715 / collar 3421 / skirt 9358 / bow 2532 / iris 161（tolerance 0.35）。
+
+## Addendum: 阴影模型重构（v9，2026-11-23）
+- **Status**: `completed`
+- **内容**：新增 `tools/tachie/shading.py`（固定左上光向、骨架传播局部内切半径、背光带、投影带），替换 `matregion` 的源图亮度分位/发块 bbox 暗带/发际横带，替换 `drawing` 的 `rim_shadow` 与白衣残影归并；`layer_edge` 先腐蚀 `over` 跳过蕾丝齿尖；分类器增加下半身孤立发色岛回收与发上白点回收；`skirt` refs 改为色板三色；`white_purity` 统计排除肤色基色。详见[阴影模型重构](./阴影模型重构.md)。
+- **验证**：momo 半身 11 项 lint PASS；`tools/tachie` 42 tests OK（新增 `test_shadow_model.py` 5 条 + momo 色调分布断言）；`tools/common` 13 tests OK；脸中影 27.4%、头发 base 48.9%/高光 3.7%、白衣 mid 21.1%/deep 5.7%、裙 mid 17.3%/deep 13.2%。

@@ -1,0 +1,42 @@
+{
+  "id": "company_employee",
+  "name": "企业职员",
+  "ref": "22",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "suit",
+  "body": {
+    "heads": 7.5,
+    "head_height_px": 75,
+    "shoulder_ratio": 2.45,
+    "face_width_ratio": 0.8,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "square",
+    "eyes": "narrow_long",
+    "eye_size": "medium",
+    "brows": "thick_flat",
+    "nose": "L_shape",
+    "mouth": "grin",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "back_swept",
+    "tie": "none",
+    "style": "black slicked-back hair",
+    "color_family": "black",
+    "reflection": "block"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "male_highschool_4",
+  "name": "高中男生4",
+  "ref": "16",
+  "gender": "male",
+  "age_group": "teen",
+  "outfit_type": "gakuran",
+  "body": {
+    "heads": 7.25,
+    "head_height_px": 70,
+    "shoulder_ratio": 2.09,
+    "face_width_ratio": 0.66,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "arms_crossed"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "small",
+    "brows": "thin_flat",
+    "nose": "short_vertical",
+    "mouth": "thin_upturned",
+    "markings": [
+      "square_thin_glasses"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "brown short hair",
+    "color_family": "brown",
+    "reflection": "block"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "tall_male_employee",
+  "name": "高个男性员工",
+  "ref": "08",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "casual_jacket",
+  "body": {
+    "heads": 7.5,
+    "head_height_px": 63,
+    "shoulder_ratio": 2.4,
+    "face_width_ratio": 0.73,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "medium",
+    "brows": "thin_arched",
+    "nose": "short_vertical",
+    "mouth": "upturned",
+    "markings": [
+      "earring"
+    ]
+  },
+  "hair": {
+    "length": "medium",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "red-brown medium wavy hair with earring",
+    "color_family": "brown",
+    "reflection": "ring"
+  }
+}

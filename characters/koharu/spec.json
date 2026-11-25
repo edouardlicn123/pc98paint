@@ -1,0 +1,246 @@
+{
+  "id": "koharu",
+  "name": "浅棕发红眼西装外套女高中生",
+  "gender": "female",
+  "age_group": "teen",
+  "proportions": {
+    "heads": 6.5,
+    "eye_width_ratio": [
+      0.4,
+      0.5
+    ]
+  },
+  "palette": {},
+  "render": {},
+  "outfit": {
+    "type": "blazer",
+    "base": "navy blazer over orange shirt",
+    "collar": "notched lapel",
+    "accent": "green neckerchief",
+    "bottom": "grey pleated skirt"
+  },
+  "hair": {
+    "color": "#c49a6c",
+    "length": "shoulder",
+    "style": "medium light brown hair, messy bangs, ahoge",
+    "bangs": "messy",
+    "tie": "none"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond",
+    "eye_size": "large",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "one_line",
+    "iris": "#e05a4f"
+  },
+  "overrides": [
+    "light brown medium hair with messy bangs and a single ahoge",
+    "red eyes",
+    "purple blazer over a white shirt with a blue bow tie",
+    "grey pleated skirt",
+    "green plaid shoulder bag worn over one shoulder",
+    "hands clasped together in front of her"
+  ],
+  "template": {
+    "archetype": "female_highschool_1",
+    "outfit": "female_highschool_1_blazer"
+  },
+  "body": {
+    "heads": 6.5,
+    "head_height_px": 76,
+    "shoulder_ratio": 1.12,
+    "face_width_ratio": 0.66,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#f6d9c8",
+        "#e8b39c",
+        "#b57a6a"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#d9b98f",
+        "#c49a6c",
+        "#8d6544"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "inner",
+      "role": "white",
+      "group": "outfit",
+      "refs": [
+        "#fbfbf7",
+        "#eeece2"
+      ],
+      "paint": "white"
+    },
+    {
+      "id": "top",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#7d62b0",
+        "#6b4c9a",
+        "#43305f"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "bottom",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#a3a4ad",
+        "#8f9098",
+        "#5b5c63"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#e8635a",
+        "#a02b25"
+      ],
+      "paint": "flat"
+    },
+    {
+      "id": "accent",
+      "role": "accent",
+      "refs": [
+        "#3d74d6",
+        "#2c5fbf",
+        "#1c3d7a"
+      ],
+      "paint": "flat2"
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "top": {
+        "surface": "plain"
+      },
+      "bottom": {
+        "surface": "plain"
+      }
+    },
+    "folds": [
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.4,
+          0.12
+        ],
+        "to": [
+          0.32,
+          0.86
+        ],
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.62,
+          0.14
+        ],
+        "to": [
+          0.7,
+          0.82
+        ],
+        "width": 2.5,
+        "tone": 1
+      },
+      {
+        "material": "top",
+        "kind": "pinch",
+        "from": [
+          0.32,
+          0.28
+        ],
+        "to": [
+          0.26,
+          0.68
+        ],
+        "width": 2.0,
+        "tone": 1
+      }
+    ],
+    "occlusions": [
+      {
+        "over": "top",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 2.0,
+        "tone": 1
+      },
+      {
+        "over": "bottom",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 1.5,
+        "tone": 1
+      },
+      {
+        "over": "accent",
+        "under": "top",
+        "derive": "layer_edge",
+        "width": 1.0,
+        "tone": 1
+      }
+    ]
+  },
+  "garment_layers": [
+    {
+      "id": "inner",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "top",
+      "over": [
+        "inner"
+      ]
+    },
+    {
+      "id": "bottom",
+      "over": [
+        "inner"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "accent",
+      "over": [
+        "top"
+      ],
+      "occludes_below": true
+    }
+  ]
+}

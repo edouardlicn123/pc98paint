@@ -1,0 +1,42 @@
+{
+  "id": "career_woman_2",
+  "name": "职业女性2",
+  "ref": "15",
+  "gender": "female",
+  "age_group": "adult",
+  "outfit_type": "trench",
+  "body": {
+    "heads": 7.0,
+    "head_height_px": 64,
+    "shoulder_ratio": 1.6,
+    "face_width_ratio": 0.67,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "arms_crossed"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "small",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "one_eye",
+    "tie": "none",
+    "style": "silver grey short hair covering one eye",
+    "color_family": "gray",
+    "reflection": "ring"
+  }
+}

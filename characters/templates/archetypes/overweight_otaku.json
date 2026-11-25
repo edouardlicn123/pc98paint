@@ -1,0 +1,44 @@
+{
+  "id": "overweight_otaku",
+  "name": "肥宅",
+  "ref": "23",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "cardigan",
+  "body": {
+    "heads": 5.75,
+    "head_height_px": 70,
+    "shoulder_ratio": 2.45,
+    "face_width_ratio": 1.0,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "small_squint",
+    "eye_size": "small",
+    "brows": "thick_flat",
+    "nose": "L_shape",
+    "mouth": "grin",
+    "markings": [
+      "round_thick_glasses"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "straight",
+    "tie": "none",
+    "style": "black bowl-cut hair",
+    "color_family": "black",
+    "reflection": "block"
+  }
+}

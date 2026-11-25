@@ -1,0 +1,45 @@
+{
+  "id": "male_college_student",
+  "name": "大学生胸像",
+  "ref": "12",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "tshirt",
+  "body": {
+    "heads": 7.0,
+    "head_height_px": 88,
+    "shoulder_ratio": 1.8,
+    "face_width_ratio": 0.7,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "bust"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "narrow",
+    "eye_size": "small",
+    "brows": "thin_flat",
+    "nose": "short_vertical",
+    "mouth": "straight",
+    "markings": [
+      "square_thin_glasses",
+      "stubble"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "teal short hair with stubble dots",
+    "color_family": "teal",
+    "reflection": "block"
+  }
+}

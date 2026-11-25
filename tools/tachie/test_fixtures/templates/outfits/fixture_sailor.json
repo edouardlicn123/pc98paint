@@ -1,0 +1,31 @@
+{
+  "id": "fixture_sailor",
+  "archetype": "fixture_female",
+  "type": "sailor",
+  "name": "测试水手服",
+  "outfit": {
+    "type": "sailor",
+    "base": "white sailor blouse",
+    "collar": "sailor collar",
+    "accent": "blue neckerchief",
+    "bottom": "navy skirt"
+  },
+  "materials": [
+    {"id": "skin", "role": "skin", "refs": ["#f6d9c8", "#e8b39c"], "paint": "bands3"},
+    {"id": "hair", "role": "hair", "refs": ["#eebb66", "#885544", "#664433"], "paint": "hair_ring"},
+    {"id": "blouse", "role": "white", "refs": ["#ffffff", "#ddddbb"], "paint": "white"},
+    {"id": "skirt", "role": "cloth", "group": "outfit", "refs": ["#4466aa", "#224477", "#223355"], "paint": "rim"},
+    {"id": "iris", "role": "eye", "refs": ["#338888", "#225555"], "paint": "flat"}
+  ],
+  "garment_layers": [
+    {"id": "blouse", "over": ["skin"]},
+    {"id": "skirt", "over": ["blouse"], "occludes_below": true}
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {"blouse": {"surface": "plain"}, "skirt": {"surface": "plain"}},
+    "occlusions": [
+      {"over": "skirt", "under": "blouse", "derive": "layer_edge", "width": 1.5, "tone": 1}
+    ]
+  }
+}

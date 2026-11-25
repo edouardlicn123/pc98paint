@@ -1,0 +1,607 @@
+{
+  "version": 1,
+  "archetypes": [
+    {
+      "id": "female_highschool_1",
+      "name": "女高中生1",
+      "ref": "01",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "blazer",
+      "outfits": [
+        "female_highschool_1_blazer"
+      ],
+      "keywords": [
+        "female",
+        "blazer",
+        "teen",
+        "女高中生1",
+        "female_highschool_1"
+      ]
+    },
+    {
+      "id": "loli",
+      "name": "萝莉",
+      "ref": "02",
+      "gender": "female",
+      "age_group": "child",
+      "outfit_type": "sailor",
+      "outfits": [
+        "loli_sailor"
+      ],
+      "keywords": [
+        "female",
+        "sailor",
+        "child",
+        "萝莉",
+        "loli"
+      ]
+    },
+    {
+      "id": "male_highschool_1",
+      "name": "男高中生1",
+      "ref": "03",
+      "gender": "male",
+      "age_group": "teen",
+      "outfit_type": "gakuran",
+      "outfits": [
+        "male_highschool_1_gakuran"
+      ],
+      "keywords": [
+        "male",
+        "gakuran",
+        "teen",
+        "男高中生1",
+        "male_highschool_1"
+      ]
+    },
+    {
+      "id": "mature_woman_1",
+      "name": "成熟女性1",
+      "ref": "04",
+      "gender": "female",
+      "age_group": "adult",
+      "outfit_type": "suit",
+      "outfits": [
+        "mature_woman_1_suit"
+      ],
+      "keywords": [
+        "female",
+        "suit",
+        "adult",
+        "成熟女性1",
+        "mature_woman_1"
+      ]
+    },
+    {
+      "id": "male_otaku",
+      "name": "高中宅男",
+      "ref": "05",
+      "gender": "male",
+      "age_group": "teen",
+      "outfit_type": "gakuran",
+      "outfits": [
+        "male_otaku_gakuran"
+      ],
+      "keywords": [
+        "male",
+        "gakuran",
+        "teen",
+        "高中宅男",
+        "male_otaku"
+      ]
+    },
+    {
+      "id": "male_teacher",
+      "name": "高中男老师",
+      "ref": "06",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "shirt",
+      "outfits": [
+        "male_teacher_shirt"
+      ],
+      "keywords": [
+        "male",
+        "shirt",
+        "adult",
+        "高中男老师",
+        "male_teacher"
+      ]
+    },
+    {
+      "id": "female_highschool_2",
+      "name": "女高中生2",
+      "ref": "07",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "blouse",
+      "outfits": [
+        "female_highschool_2_blouse"
+      ],
+      "keywords": [
+        "female",
+        "blouse",
+        "teen",
+        "女高中生2",
+        "female_highschool_2"
+      ]
+    },
+    {
+      "id": "tall_male_employee",
+      "name": "高个男性员工",
+      "ref": "08",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "casual_jacket",
+      "outfits": [
+        "tall_male_employee_casual_jacket"
+      ],
+      "keywords": [
+        "male",
+        "casual_jacket",
+        "adult",
+        "高个男性员工",
+        "tall_male_employee"
+      ]
+    },
+    {
+      "id": "adult_father",
+      "name": "成年父亲",
+      "ref": "09",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "coat",
+      "outfits": [
+        "adult_father_coat"
+      ],
+      "keywords": [
+        "male",
+        "coat",
+        "adult",
+        "成年父亲",
+        "adult_father"
+      ]
+    },
+    {
+      "id": "married_office_woman",
+      "name": "人妻职业女性",
+      "ref": "10",
+      "gender": "female",
+      "age_group": "adult",
+      "outfit_type": "suit",
+      "outfits": [
+        "married_office_woman_suit"
+      ],
+      "keywords": [
+        "female",
+        "suit",
+        "adult",
+        "人妻职业女性",
+        "married_office_woman"
+      ]
+    },
+    {
+      "id": "tall_male_highschool",
+      "name": "高个高中男生",
+      "ref": "11",
+      "gender": "male",
+      "age_group": "teen",
+      "outfit_type": "shirt",
+      "outfits": [
+        "tall_male_highschool_shirt"
+      ],
+      "keywords": [
+        "male",
+        "shirt",
+        "teen",
+        "高个高中男生",
+        "tall_male_highschool"
+      ]
+    },
+    {
+      "id": "male_college_student",
+      "name": "大学生胸像",
+      "ref": "12",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "tshirt",
+      "outfits": [
+        "male_college_student_tshirt"
+      ],
+      "keywords": [
+        "male",
+        "tshirt",
+        "adult",
+        "大学生胸像",
+        "male_college_student"
+      ]
+    },
+    {
+      "id": "male_highschool_3",
+      "name": "高中男生3",
+      "ref": "13",
+      "gender": "male",
+      "age_group": "teen",
+      "outfit_type": "casual_jacket",
+      "outfits": [
+        "male_highschool_3_casual_jacket"
+      ],
+      "keywords": [
+        "male",
+        "casual_jacket",
+        "teen",
+        "高中男生3",
+        "male_highschool_3"
+      ]
+    },
+    {
+      "id": "career_woman_1",
+      "name": "职业女性1",
+      "ref": "14",
+      "gender": "female",
+      "age_group": "adult",
+      "outfit_type": "trench",
+      "outfits": [
+        "career_woman_1_trench"
+      ],
+      "keywords": [
+        "female",
+        "trench",
+        "adult",
+        "职业女性1",
+        "career_woman_1"
+      ]
+    },
+    {
+      "id": "career_woman_2",
+      "name": "职业女性2",
+      "ref": "15",
+      "gender": "female",
+      "age_group": "adult",
+      "outfit_type": "trench",
+      "outfits": [
+        "career_woman_2_trench"
+      ],
+      "keywords": [
+        "female",
+        "trench",
+        "adult",
+        "职业女性2",
+        "career_woman_2"
+      ]
+    },
+    {
+      "id": "male_highschool_4",
+      "name": "高中男生4",
+      "ref": "16",
+      "gender": "male",
+      "age_group": "teen",
+      "outfit_type": "gakuran",
+      "outfits": [
+        "male_highschool_4_gakuran"
+      ],
+      "keywords": [
+        "male",
+        "gakuran",
+        "teen",
+        "高中男生4",
+        "male_highschool_4"
+      ]
+    },
+    {
+      "id": "female_highschool_3",
+      "name": "女高中生3",
+      "ref": "17",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "coat",
+      "outfits": [
+        "female_highschool_3_coat"
+      ],
+      "keywords": [
+        "female",
+        "coat",
+        "teen",
+        "女高中生3",
+        "female_highschool_3"
+      ]
+    },
+    {
+      "id": "female_highschool_4",
+      "name": "女高中生4",
+      "ref": "18",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "sailor",
+      "outfits": [
+        "female_highschool_4_sailor"
+      ],
+      "keywords": [
+        "female",
+        "sailor",
+        "teen",
+        "女高中生4",
+        "female_highschool_4"
+      ]
+    },
+    {
+      "id": "middle_aged_man",
+      "name": "中年男性",
+      "ref": "19",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "suit",
+      "outfits": [
+        "middle_aged_man_suit"
+      ],
+      "keywords": [
+        "male",
+        "suit",
+        "adult",
+        "中年男性",
+        "middle_aged_man"
+      ]
+    },
+    {
+      "id": "mature_woman_2",
+      "name": "成熟女性2",
+      "ref": "20",
+      "gender": "female",
+      "age_group": "adult",
+      "outfit_type": "swimwear",
+      "outfits": [
+        "mature_woman_2_swimwear"
+      ],
+      "keywords": [
+        "female",
+        "swimwear",
+        "adult",
+        "成熟女性2",
+        "mature_woman_2"
+      ]
+    },
+    {
+      "id": "female_highschool_5",
+      "name": "女高中生5",
+      "ref": "21",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "cardigan",
+      "outfits": [
+        "female_highschool_5_cardigan"
+      ],
+      "keywords": [
+        "female",
+        "cardigan",
+        "teen",
+        "女高中生5",
+        "female_highschool_5"
+      ]
+    },
+    {
+      "id": "company_employee",
+      "name": "企业职员",
+      "ref": "22",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "suit",
+      "outfits": [
+        "company_employee_suit"
+      ],
+      "keywords": [
+        "male",
+        "suit",
+        "adult",
+        "企业职员",
+        "company_employee"
+      ]
+    },
+    {
+      "id": "overweight_otaku",
+      "name": "肥宅",
+      "ref": "23",
+      "gender": "male",
+      "age_group": "adult",
+      "outfit_type": "cardigan",
+      "outfits": [
+        "overweight_otaku_cardigan"
+      ],
+      "keywords": [
+        "male",
+        "cardigan",
+        "adult",
+        "肥宅",
+        "overweight_otaku"
+      ]
+    },
+    {
+      "id": "petite_female_highschool",
+      "name": "矮小女高中生",
+      "ref": "24",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "cardigan",
+      "outfits": [
+        "petite_female_highschool_cardigan"
+      ],
+      "keywords": [
+        "female",
+        "cardigan",
+        "teen",
+        "矮小女高中生",
+        "petite_female_highschool"
+      ]
+    },
+    {
+      "id": "momo",
+      "name": "桃",
+      "ref": "25",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "sailor",
+      "outfits": [
+        "momo_sailor"
+      ],
+      "keywords": [
+        "female",
+        "sailor",
+        "teen",
+        "桃",
+        "momo"
+      ]
+    }
+  ],
+  "outfits": [
+    {
+      "id": "female_highschool_1_blazer",
+      "archetype": "female_highschool_1",
+      "type": "blazer",
+      "name": "女高中生1装束"
+    },
+    {
+      "id": "loli_sailor",
+      "archetype": "loli",
+      "type": "sailor",
+      "name": "萝莉装束"
+    },
+    {
+      "id": "male_highschool_1_gakuran",
+      "archetype": "male_highschool_1",
+      "type": "gakuran",
+      "name": "男高中生1装束"
+    },
+    {
+      "id": "mature_woman_1_suit",
+      "archetype": "mature_woman_1",
+      "type": "suit",
+      "name": "成熟女性1装束"
+    },
+    {
+      "id": "male_otaku_gakuran",
+      "archetype": "male_otaku",
+      "type": "gakuran",
+      "name": "高中宅男装束"
+    },
+    {
+      "id": "male_teacher_shirt",
+      "archetype": "male_teacher",
+      "type": "shirt",
+      "name": "高中男老师装束"
+    },
+    {
+      "id": "female_highschool_2_blouse",
+      "archetype": "female_highschool_2",
+      "type": "blouse",
+      "name": "女高中生2装束"
+    },
+    {
+      "id": "tall_male_employee_casual_jacket",
+      "archetype": "tall_male_employee",
+      "type": "casual_jacket",
+      "name": "高个男性员工装束"
+    },
+    {
+      "id": "adult_father_coat",
+      "archetype": "adult_father",
+      "type": "coat",
+      "name": "成年父亲装束"
+    },
+    {
+      "id": "married_office_woman_suit",
+      "archetype": "married_office_woman",
+      "type": "suit",
+      "name": "人妻职业女性装束"
+    },
+    {
+      "id": "tall_male_highschool_shirt",
+      "archetype": "tall_male_highschool",
+      "type": "shirt",
+      "name": "高个高中男生装束"
+    },
+    {
+      "id": "male_college_student_tshirt",
+      "archetype": "male_college_student",
+      "type": "tshirt",
+      "name": "大学生胸像装束"
+    },
+    {
+      "id": "male_highschool_3_casual_jacket",
+      "archetype": "male_highschool_3",
+      "type": "casual_jacket",
+      "name": "高中男生3装束"
+    },
+    {
+      "id": "career_woman_1_trench",
+      "archetype": "career_woman_1",
+      "type": "trench",
+      "name": "职业女性1装束"
+    },
+    {
+      "id": "career_woman_2_trench",
+      "archetype": "career_woman_2",
+      "type": "trench",
+      "name": "职业女性2装束"
+    },
+    {
+      "id": "male_highschool_4_gakuran",
+      "archetype": "male_highschool_4",
+      "type": "gakuran",
+      "name": "高中男生4装束"
+    },
+    {
+      "id": "female_highschool_3_coat",
+      "archetype": "female_highschool_3",
+      "type": "coat",
+      "name": "女高中生3装束"
+    },
+    {
+      "id": "female_highschool_4_sailor",
+      "archetype": "female_highschool_4",
+      "type": "sailor",
+      "name": "女高中生4装束"
+    },
+    {
+      "id": "middle_aged_man_suit",
+      "archetype": "middle_aged_man",
+      "type": "suit",
+      "name": "中年男性装束"
+    },
+    {
+      "id": "mature_woman_2_swimwear",
+      "archetype": "mature_woman_2",
+      "type": "swimwear",
+      "name": "成熟女性2装束"
+    },
+    {
+      "id": "female_highschool_5_cardigan",
+      "archetype": "female_highschool_5",
+      "type": "cardigan",
+      "name": "女高中生5装束"
+    },
+    {
+      "id": "company_employee_suit",
+      "archetype": "company_employee",
+      "type": "suit",
+      "name": "企业职员装束"
+    },
+    {
+      "id": "overweight_otaku_cardigan",
+      "archetype": "overweight_otaku",
+      "type": "cardigan",
+      "name": "肥宅装束"
+    },
+    {
+      "id": "petite_female_highschool_cardigan",
+      "archetype": "petite_female_highschool",
+      "type": "cardigan",
+      "name": "矮小女高中生装束"
+    },
+    {
+      "id": "momo_sailor",
+      "archetype": "momo",
+      "type": "sailor",
+      "name": "桃的水手装"
+    }
+  ]
+}

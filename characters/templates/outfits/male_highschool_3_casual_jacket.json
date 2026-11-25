@@ -1,0 +1,192 @@
+{
+  "id": "male_highschool_3_casual_jacket",
+  "archetype": "male_highschool_3",
+  "type": "casual_jacket",
+  "name": "高中男生3装束",
+  "outfit": {
+    "type": "casual_jacket",
+    "base": "army green open jacket over magenta t-shirt",
+    "collar": "stand collar",
+    "accent": "white print on t-shirt",
+    "bottom": "dark trousers"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#f6d9c8",
+        "#e8b39c",
+        "#b57a6a"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#ffaaaa",
+        "#ee5566",
+        "#663333"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "inner",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#ee5566",
+        "#aa3344",
+        "#663333"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "top",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#667744",
+        "#445533",
+        "#333322"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "bottom",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#556677",
+        "#334455",
+        "#223344"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#885544",
+        "#664433"
+      ],
+      "paint": "flat"
+    },
+    {
+      "id": "accent",
+      "role": "accent",
+      "refs": [
+        "#ffffff",
+        "#ddddbb"
+      ],
+      "paint": "flat2"
+    }
+  ],
+  "garment_layers": [
+    {
+      "id": "inner",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "top",
+      "over": [
+        "inner"
+      ]
+    },
+    {
+      "id": "bottom",
+      "over": [
+        "inner"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "accent",
+      "over": [
+        "top"
+      ],
+      "occludes_below": true
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "top": {
+        "surface": "plain"
+      },
+      "bottom": {
+        "surface": "plain"
+      }
+    },
+    "folds": [
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.4,
+          0.12
+        ],
+        "to": [
+          0.32,
+          0.86
+        ],
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.62,
+          0.14
+        ],
+        "to": [
+          0.7,
+          0.82
+        ],
+        "width": 2.5,
+        "tone": 1
+      },
+      {
+        "material": "top",
+        "kind": "pinch",
+        "from": [
+          0.32,
+          0.28
+        ],
+        "to": [
+          0.26,
+          0.68
+        ],
+        "width": 2.0,
+        "tone": 1
+      }
+    ],
+    "occlusions": [
+      {
+        "over": "top",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 2.0,
+        "tone": 1
+      },
+      {
+        "over": "bottom",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 1.5,
+        "tone": 1
+      },
+      {
+        "over": "accent",
+        "under": "top",
+        "derive": "layer_edge",
+        "width": 1.0,
+        "tone": 1
+      }
+    ]
+  }
+}

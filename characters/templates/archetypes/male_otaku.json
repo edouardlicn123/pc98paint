@@ -1,0 +1,44 @@
+{
+  "id": "male_otaku",
+  "name": "高中宅男",
+  "ref": "05",
+  "gender": "male",
+  "age_group": "teen",
+  "outfit_type": "gakuran",
+  "body": {
+    "heads": 7.0,
+    "head_height_px": 57,
+    "shoulder_ratio": 1.55,
+    "face_width_ratio": 0.75,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "squint",
+    "eye_size": "small",
+    "brows": "drooping",
+    "nose": "dot",
+    "mouth": "straight",
+    "markings": [
+      "square_thick_glasses"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "messy",
+    "tie": "none",
+    "style": "black messy curly shag",
+    "color_family": "black",
+    "reflection": "block"
+  }
+}

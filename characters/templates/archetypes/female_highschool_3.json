@@ -1,0 +1,42 @@
+{
+  "id": "female_highschool_3",
+  "name": "女高中生3",
+  "ref": "17",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "coat",
+  "body": {
+    "heads": 6.75,
+    "head_height_px": 72,
+    "shoulder_ratio": 2.2,
+    "face_width_ratio": 0.72,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "large_almond",
+    "eye_size": "large",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": []
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "side_part",
+    "tie": "headband",
+    "style": "light brown long straight hair with white headband",
+    "color_family": "brown",
+    "reflection": "ring"
+  }
+}

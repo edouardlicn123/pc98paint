@@ -1,0 +1,45 @@
+{
+  "id": "adult_father",
+  "name": "成年父亲",
+  "ref": "09",
+  "gender": "male",
+  "age_group": "adult",
+  "outfit_type": "coat",
+  "body": {
+    "heads": 7.5,
+    "head_height_px": 62,
+    "shoulder_ratio": 2.45,
+    "face_width_ratio": 0.77,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "square",
+    "eyes": "squint",
+    "eye_size": "small",
+    "brows": "thick_flat",
+    "nose": "L_shape",
+    "mouth": "open",
+    "markings": [
+      "stubble",
+      "pipe"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "back_swept",
+    "tie": "none",
+    "style": "blonde back-swept hair with stubble",
+    "color_family": "blonde",
+    "reflection": "block"
+  }
+}

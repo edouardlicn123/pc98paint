@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "archetypes": [
+    {
+      "id": "fixture_female",
+      "name": "测试原型",
+      "ref": "99",
+      "gender": "female",
+      "age_group": "teen",
+      "outfit_type": "sailor",
+      "outfits": ["fixture_sailor", "fixture_casual"],
+      "keywords": ["female", "sailor", "casual", "teen", "测试原型", "fixture_female"]
+    }
+  ],
+  "outfits": [
+    {"id": "fixture_sailor", "archetype": "fixture_female", "type": "sailor", "name": "测试水手服"},
+    {"id": "fixture_casual", "archetype": "fixture_female", "type": "casual", "name": "测试常服"}
+  ]
+}

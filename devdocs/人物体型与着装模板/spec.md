@@ -35,7 +35,7 @@
 
 ## Functional Requirements
 
-- **FR-1（胸围实测）**：对 `refs/proportions/` 全部 24 张参考图实测体型/胸围，产出 `_work/scratch/bust_analysis.json` 与 `bust_analysis.md`。数据以「头高」为归一化单位（分辨率无关），至少含：头高、肩宽/头宽比、胸高点 y（距下巴的头高倍数）、两胸间距/肩宽比、下胸围线 y、胸围档位 `size`（0=平胸/男性，1=小，2=中，3=大，4=丰满）；男性/平胸参考显式标记 `size=0` 且不下胸围线。
+- **FR-1（胸围实测）**：对 `refs/proportions/` 全部 24 张参考图实测体型/胸围，产出 `_work/scratch/bust_analysis.json` 与 `bust_analysis.md`。数据以「头高」为归一化单位（分辨率无关），至少含：头高、肩宽/头高比、胸高点 y（距头顶的头高倍数，`1.0`=颈线）、两胸间距/白衣 bbox 宽度比、下胸围线 y、胸围档位 `size`（0=平胸/男性，1=小，2=中，3=大，4=丰满）；男性/平胸参考显式标记 `size=0` 且不下胸围线。
 - **FR-2（三层模板架构）**：在 `characters/templates/` 下建立三层 JSON：原型（`archetypes/`）、着装变体（`outfits/`）、索引（`index.json`）。原型与着装变体**分离存储**，同一原型可挂多个着装变体；校服与常服是同一原型下的两个不同着装变体。
 - **FR-3（原型记录体型/脸型/发型）**：每个原型 JSON 带 `name`（如「女高中生1」）、`ref`（参考图编号），并记录：`body`（heads、shoulder_ratio、face_width_ratio、bust、torso、pose）、`face`（脸型、眼型/大小、眉、鼻、嘴、markings）、`hair`（长度、前发、束发、style、color_family、reflection）。词汇沿用 `docs/05`/`docs/06` 与 AGENTS.md 速查表，不自由发明。
 - **FR-4（着装变体记录服装结构）**：每个着装变体 JSON 记录 `garment_layers`（层叠顺序：如 undershirt→collar→skirt，含 `over`/`under`/`occludes_below`）、`materials`、`drawing`（folds / occlusions / surfaces）。校服与常服分属不同变体文件。

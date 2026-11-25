@@ -116,7 +116,8 @@ def material_guard(rgb, idx, pal):
 
 def render(src_path, mode, name, pal=None, dither_de=None, color_min=None,
            material_region=False, smooth=False, guard=False, materials=None,
-           material_baseline=None, return_debug=False, drawing_config=None):
+           material_baseline=None, return_debug=False, drawing_config=None,
+           body=None, region_prior=None):
     src = Image.open(src_path).convert("RGB")
     fg_hi = clean_fg(~bs.background_mask(src))
     bg_hi = ~fg_hi
@@ -173,7 +174,8 @@ def render(src_path, mode, name, pal=None, dither_de=None, color_min=None,
         if materials:
             fills, mstats, classification_debug = matregion.render_spec(
                 rgb, fg, pal, materials, tier=mode, return_debug=True,
-                drawing_config=drawing_config)
+                drawing_config=drawing_config, body=body,
+                region_prior=region_prior)
             material_idx = classification_debug["material_idx"]
             despeckle_idx = material_idx.copy()
             despeckle_idx[~fg] = -2  # 暗结构与透明背景不能互相吞并。
@@ -289,10 +291,24 @@ def main():
     ap.add_argument("--closeup", default=str(SRC / "akira_bust_hi.jpg"))
     ap.add_argument("--half", default=str(SRC / "akira_half_hi.jpg"))
     ap.add_argument("--full", default=str(SRC / "akira_full_hi.jpg"))
+    ap.add_argument("--spec", default=None,
+                    help="角色 spec.json 路径（用于 resolve template 传 body/drawing_config）")
     args = ap.parse_args()
 
     pal = None
     pal_closeup = None
+    materials_arg = None
+    drawing_arg = None
+    body_arg = None
+    if args.spec:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "common"))
+        import template as _tmpl  # noqa: E402
+        import schema as _schema  # noqa: E402
+        _spec = _schema.load(args.spec)
+        effective, _ = _tmpl.resolve_template(_spec)
+        materials_arg = effective.get("materials")
+        drawing_arg = effective.get("drawing")
+        body_arg = effective.get("body")
     if args.palette:
         import palette98
         pal = palette98.load(args.palette)
@@ -303,7 +319,8 @@ def main():
     src = {"closeup": args.closeup, "half": args.half, "full": args.full}[args.tier]
     pal_tier = (pal_closeup or pal) if args.tier == "closeup" else pal
     render(src, args.tier, f"{args.prefix}_{args.tier}", pal_tier, args.dither_de,
-           args.color_min, args.material_region, args.smooth, args.guard)
+           args.color_min, args.material_region, args.smooth, args.guard,
+           materials=materials_arg, drawing_config=drawing_arg, body=body_arg)
 
 
 if __name__ == "__main__":

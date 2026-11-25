@@ -1,0 +1,42 @@
+{
+  "id": "female_highschool_2",
+  "name": "女高中生2",
+  "ref": "07",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "blouse",
+  "body": {
+    "heads": 6.75,
+    "head_height_px": 60,
+    "shoulder_ratio": 1.2,
+    "face_width_ratio": 0.6,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond",
+    "eye_size": "medium",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "straight",
+    "markings": []
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "black long straight hair",
+    "color_family": "black",
+    "reflection": "ring"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "mature_woman_1",
+  "name": "成熟女性1",
+  "ref": "04",
+  "gender": "female",
+  "age_group": "adult",
+  "outfit_type": "suit",
+  "body": {
+    "heads": 7.0,
+    "head_height_px": 69,
+    "shoulder_ratio": 1.68,
+    "face_width_ratio": 0.72,
+    "bust": {
+      "size": 3,
+      "center_y_head": 2.0,
+      "separation": 0.45,
+      "under_boob_y_head": 2.3,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond",
+    "eye_size": "medium",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "slightly_open",
+    "markings": [
+      "mole"
+    ]
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "side_part",
+    "tie": "hat",
+    "style": "long blonde waves with red beret",
+    "color_family": "blonde",
+    "reflection": "ring"
+  }
+}

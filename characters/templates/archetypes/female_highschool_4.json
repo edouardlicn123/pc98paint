@@ -1,0 +1,42 @@
+{
+  "id": "female_highschool_4",
+  "name": "女高中生4",
+  "ref": "18",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "sailor",
+  "body": {
+    "heads": 6.5,
+    "head_height_px": 78,
+    "shoulder_ratio": 1.44,
+    "face_width_ratio": 0.64,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "round",
+    "eye_size": "large",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "short",
+    "markings": []
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "spiky",
+    "tie": "none",
+    "style": "magenta short spiky hair",
+    "color_family": "magenta",
+    "reflection": "ring"
+  }
+}

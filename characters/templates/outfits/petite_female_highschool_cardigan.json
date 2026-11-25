@@ -1,0 +1,199 @@
+{
+  "id": "petite_female_highschool_cardigan",
+  "archetype": "petite_female_highschool",
+  "type": "cardigan",
+  "name": "矮小女高中生装束",
+  "outfit": {
+    "type": "cardigan",
+    "base": "beige cardigan over white blouse",
+    "collar": "crew neck open front",
+    "accent": "red plaid bow",
+    "bottom": "pink plaid skirt"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#f6d9c8",
+        "#e8b39c",
+        "#b57a6a"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#ffaaaa",
+        "#ee5566",
+        "#663333"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "inner",
+      "role": "white",
+      "group": "outfit",
+      "refs": [
+        "#ffffff",
+        "#ddddbb"
+      ],
+      "paint": "white"
+    },
+    {
+      "id": "top",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#cc8855",
+        "#886644",
+        "#664433"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "bottom",
+      "role": "cloth",
+      "group": "outfit",
+      "refs": [
+        "#ee99aa",
+        "#aa6677",
+        "#663333"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#885544",
+        "#664433"
+      ],
+      "paint": "flat"
+    },
+    {
+      "id": "accent",
+      "role": "accent",
+      "refs": [
+        "#ee5566",
+        "#aa3344"
+      ],
+      "paint": "flat2"
+    }
+  ],
+  "garment_layers": [
+    {
+      "id": "inner",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "top",
+      "over": [
+        "inner"
+      ]
+    },
+    {
+      "id": "bottom",
+      "over": [
+        "inner"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "accent",
+      "over": [
+        "top"
+      ],
+      "occludes_below": true
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "top": {
+        "surface": "plain"
+      },
+      "bottom": {
+        "surface": "plaid",
+        "spacing": [
+          5,
+          6
+        ],
+        "tones": [
+          1
+        ],
+        "line_width": 1
+      }
+    },
+    "folds": [
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.4,
+          0.12
+        ],
+        "to": [
+          0.32,
+          0.86
+        ],
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "material": "bottom",
+        "kind": "radiate",
+        "from": [
+          0.62,
+          0.14
+        ],
+        "to": [
+          0.7,
+          0.82
+        ],
+        "width": 2.5,
+        "tone": 1
+      },
+      {
+        "material": "top",
+        "kind": "pinch",
+        "from": [
+          0.32,
+          0.28
+        ],
+        "to": [
+          0.26,
+          0.68
+        ],
+        "width": 2.0,
+        "tone": 1
+      }
+    ],
+    "occlusions": [
+      {
+        "over": "top",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 2.0,
+        "tone": 1
+      },
+      {
+        "over": "bottom",
+        "under": "inner",
+        "derive": "layer_edge",
+        "width": 1.5,
+        "tone": 1
+      },
+      {
+        "over": "accent",
+        "under": "top",
+        "derive": "layer_edge",
+        "width": 1.0,
+        "tone": 1
+      }
+    ]
+  }
+}

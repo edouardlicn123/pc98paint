@@ -1,0 +1,40 @@
+{
+  "id": "fixture_female",
+  "name": "测试原型",
+  "ref": "99",
+  "gender": "female",
+  "age_group": "teen",
+  "outfit_type": "sailor",
+  "body": {
+    "heads": 6.5,
+    "head_height_px": 70,
+    "shoulder_ratio": 1.25,
+    "face_width_ratio": 0.64,
+    "bust": {
+      "size": 2,
+      "center_y_head": 2.45,
+      "separation": 0.55,
+      "under_boob_y_head": 2.9,
+      "projection": 0.0
+    },
+    "torso": {"lean": 0.0},
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond",
+    "eye_size": "medium",
+    "brows": "thin_flat",
+    "nose": "dot",
+    "mouth": "straight",
+    "markings": []
+  },
+  "hair": {
+    "length": "bob",
+    "bangs": "side_part",
+    "tie": "none",
+    "style": "test bob",
+    "color_family": "brown",
+    "reflection": "ring"
+  }
+}

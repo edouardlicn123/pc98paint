@@ -1,0 +1,44 @@
+{
+  "id": "married_office_woman",
+  "name": "人妻职业女性",
+  "ref": "10",
+  "gender": "female",
+  "age_group": "adult",
+  "outfit_type": "suit",
+  "body": {
+    "heads": 7.25,
+    "head_height_px": 64,
+    "shoulder_ratio": 2.05,
+    "face_width_ratio": 0.76,
+    "bust": {
+      "size": 3,
+      "center_y_head": 2.0,
+      "separation": 0.45,
+      "under_boob_y_head": 2.3,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "arms_crossed"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "almond_upturned",
+    "eye_size": "medium",
+    "brows": "thin_arched",
+    "nose": "short_vertical",
+    "mouth": "red_lips",
+    "markings": [
+      "lipstick"
+    ]
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "middle_part",
+    "tie": "updo",
+    "style": "navy purple updo with large gold bow",
+    "color_family": "black",
+    "reflection": "ring"
+  }
+}

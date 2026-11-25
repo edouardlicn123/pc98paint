@@ -1,0 +1,42 @@
+{
+  "id": "mature_woman_2",
+  "name": "成熟女性2",
+  "ref": "20",
+  "gender": "female",
+  "age_group": "adult",
+  "outfit_type": "swimwear",
+  "body": {
+    "heads": 7.25,
+    "head_height_px": 56,
+    "shoulder_ratio": 1.57,
+    "face_width_ratio": 0.68,
+    "bust": {
+      "size": 4,
+      "center_y_head": 2.1,
+      "separation": 0.5,
+      "under_boob_y_head": 2.4,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "large_almond",
+    "eye_size": "large",
+    "brows": "thin_arched",
+    "nose": "short_vertical",
+    "mouth": "full_lips",
+    "markings": []
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "middle_part",
+    "tie": "none",
+    "style": "long voluminous blonde hair",
+    "color_family": "blonde",
+    "reflection": "ring"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "id": "momo_sailor",
+  "archetype": "momo",
+  "type": "sailor",
+  "name": "桃的水手装",
+  "outfit": {
+    "type": "sailor",
+    "base": "white short-sleeve sailor blouse",
+    "collar": "taupe grey-brown sailor collar with double white stripes",
+    "accent": "matching cuff stripes, four round front buttons, small chest pocket, light waist band",
+    "bottom": "taupe pleated knee-length skirt"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#ffddcc",
+        "#d99a7e",
+        "#a96650"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#ffffff",
+        "#f7b8a8",
+        "#e07a8a",
+        "#8f4a52",
+        "#6b3540"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "blouse",
+      "role": "white",
+      "refs": [
+        "#ffffff",
+        "#adbca9",
+        "#6d7b65"
+      ],
+      "paint": "white"
+    },
+    {
+      "id": "collar",
+      "role": "cloth",
+      "refs": [
+        "#9a8a7a",
+        "#6e5f52",
+        "#4a3f36"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "skirt",
+      "role": "cloth",
+      "refs": [
+        "#9a8a7a",
+        "#6e5f52",
+        "#4a3f36"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "bow",
+      "role": "accent",
+      "refs": [
+        "#e8b73a",
+        "#a87a1e"
+      ],
+      "paint": "flat2"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#2f8f86",
+        "#1f5f5a"
+      ],
+      "paint": "flat"
+    }
+  ],
+  "garment_layers": [
+    {
+      "id": "blouse",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "collar",
+      "over": [
+        "blouse"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "skirt",
+      "over": [
+        "blouse"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "bow",
+      "over": [
+        "blouse",
+        "collar"
+      ],
+      "occludes_below": true
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "blouse": {
+        "surface": "plain"
+      },
+      "collar": {
+        "surface": "plain"
+      },
+      "skirt": {
+        "surface": "plain"
+      }
+    },
+    "folds": [],
+    "occlusions": [
+      {
+        "over": "collar",
+        "under": "blouse",
+        "derive": "layer_edge",
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "over": "bow",
+        "under": "collar",
+        "derive": "layer_edge",
+        "width": 2.0,
+        "tone": 1
+      },
+      {
+        "over": "blouse",
+        "under": "skirt",
+        "derive": "layer_edge",
+        "width": 4.0,
+        "tone": 1
+      }
+    ]
+  }
+}

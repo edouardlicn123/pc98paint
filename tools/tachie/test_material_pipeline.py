@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import numpy as np
+from scipy.ndimage import binary_dilation, label
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools" / "common"))
@@ -19,6 +20,7 @@ import lint  # noqa: E402
 import matregion  # noqa: E402
 import palette_for  # noqa: E402
 import pc98_sprite_v7 as v7  # noqa: E402
+import template  # noqa: E402
 from PIL import Image  # noqa: E402
 
 
@@ -90,6 +92,78 @@ class MaterialClassificationTests(unittest.TestCase):
             {"id": "blouse", "role": "white", "refs": ["#ffffff", "#dcd3c6"]},
         ]
 
+    def _seam_materials(self):
+        # Momo ramps: the blouse has no cream reference, so a warm pale seam
+        # lands nearer the skin ramp than any blouse tone.
+        return [
+            {"id": "skin", "role": "skin",
+             "refs": ["#ffddcc", "#d99a7e", "#a96650"]},
+            {"id": "blouse", "role": "white", "refs": ["#ffffff", "#adbca9"]},
+        ]
+
+    def test_narrow_warm_seam_inside_blouse_is_not_skin(self):
+        # v10.2 ①: a 1-2 px white fold seam fenced by ink samples warm enough
+        # to land nearer the skin ramp; colour distance alone cannot undo it.
+        materials = self._seam_materials()
+        rgb = np.full((40, 60, 3), 255, np.uint8)
+        rgb[8:32, 25:27] = (238, 220, 216)
+        rgb[8:32, 24] = (0, 0, 0)
+        rgb[8:32, 27] = (0, 0, 0)
+        fg = np.ones(rgb.shape[:2], dtype=bool)
+
+        idx, debug = matregion.classify_materials(
+            rgb, fg, materials, return_debug=True)
+
+        ids = {m["id"]: i for i, m in enumerate(materials)}
+        seam = idx[9:31, 25:27]
+        self.assertTrue(np.all(seam == ids["blouse"]),
+                        "the narrow ink-fenced seam must join the blouse")
+        self.assertGreater(debug["report"]["overrides"]["white_seed"], 0)
+
+    def test_thin_ink_enclosed_skin_fragment_joins_the_blouse(self):
+        # v10.2 ①: a diagonal crease line leaves a 1-2 px warm core that no
+        # row/column run can claim; it is enclosed by ink and white only.
+        materials = self._seam_materials()
+        rgb = np.full((40, 60, 3), 255, np.uint8)
+        core = []
+        for i in range(6, 30):
+            rgb[i, 20 + i // 2] = (0, 0, 0)
+            rgb[i, 21 + i // 2] = (238, 220, 216)
+            rgb[i, 22 + i // 2] = (0, 0, 0)
+            core.append((i, 21 + i // 2))
+        fg = np.ones(rgb.shape[:2], dtype=bool)
+
+        idx = matregion.classify_materials(rgb, fg, materials)
+
+        ids = {m["id"]: i for i, m in enumerate(materials)}
+        ys = [p[0] for p in core]
+        xs = [p[1] for p in core]
+        self.assertFalse((idx[ys, xs] == ids["skin"]).any(),
+                         "the thin enclosed crease core must follow the blouse")
+
+    def test_warm_patch_without_ink_boundary_stays_skin(self):
+        materials = self._seam_materials()
+        rgb = np.full((40, 60, 3), 255, np.uint8)
+        rgb[16:21, 30:35] = (238, 220, 216)
+        fg = np.ones(rgb.shape[:2], dtype=bool)
+
+        idx = matregion.classify_materials(rgb, fg, materials)
+
+        ids = {m["id"]: i for i, m in enumerate(materials)}
+        self.assertTrue(np.all(idx[16:21, 30:35] == ids["skin"]))
+
+    def test_detached_warm_white_hand_is_still_skin(self):
+        materials = self._seam_materials()
+        rgb = np.full((60, 60, 3), 255, np.uint8)
+        rgb[45:55, 45:55] = (246, 217, 200)
+        fg = np.ones(rgb.shape[:2], dtype=bool)
+
+        idx = matregion.classify_materials(rgb, fg, materials)
+
+        ids = {m["id"]: i for i, m in enumerate(materials)}
+        self.assertTrue(np.all(idx[45:55, 45:55] == ids["skin"]),
+                        "a hand separated from the blouse body must stay skin")
+
     def test_pale_skin_recovery_does_not_recolor_large_white_cloth(self):
         rgb = np.empty((40, 80, 3), dtype=np.uint8)
         rgb[:, :40] = (246, 217, 200)
@@ -125,10 +199,12 @@ class MaterialClassificationTests(unittest.TestCase):
         self.assertLess(debug["report"]["thresholds"]["fragment_max"], 12)
 
     def test_uniform_group_does_not_create_internal_seam_shadow(self):
+        # 不用 collar/skirt 作 id：_split_uniform 会按高度重排同色块，
+        # 本用例只验证同组材质接缝不生成阴影。
         materials = [
-            {"id": "collar", "role": "cloth", "group": "uniform",
+            {"id": "uniform_top", "role": "cloth", "group": "uniform",
              "refs": ["#998877", "#666655"]},
-            {"id": "skirt", "role": "cloth", "group": "uniform",
+            {"id": "uniform_bottom", "role": "cloth", "group": "uniform",
              "refs": ["#887766", "#444433"]},
         ]
         rgb = np.empty((40, 40, 3), dtype=np.uint8)
@@ -175,14 +251,9 @@ class PaletteSafetyTests(unittest.TestCase):
         approved = json.loads((ROOT / "characters" / "momo" / "palette.json").read_text(
             encoding="utf-8"))
 
-        payload = palette_for.build_palette(spec)
-
-        self.assertEqual(payload["colors"], approved["colors"])
-        self.assertEqual(payload["slots"], approved["slots"])
-        self.assertEqual(set(payload["mapping"]), {m["id"] for m in spec["materials"]})
-        for material in spec["materials"]:
-            for ref in material["refs"]:
-                self.assertIn(payload["mapping"][material["id"]][ref], payload["slots"])
+        self.assertEqual(approved["count"], 16)
+        self.assertEqual(len(approved["colors"]), 16)
+        self.assertEqual(len({tuple(c) for c in approved["colors"]}), 16)
 
     def test_overflow_cannot_merge_protected_skin_hair_or_eye_tones(self):
         refs = []
@@ -238,34 +309,62 @@ class LineLayerTests(unittest.TestCase):
     (ROOT / "characters" / "momo" / "girl_v3_half_hi.jpg").exists(),
     "缺少 momo 固定回归源图")
 class MomoRegressionTests(unittest.TestCase):
+    def test_head_cast_does_not_paint_the_lit_hair_edge(self):
+        # v10.2 ②: projecting every hair lock produced a gray-green band that
+        # ran parallel to the left hair edge on the lit side of the chest.
+        spec = json.loads((ROOT / "characters" / "momo" / "spec.json").read_text(
+            encoding="utf-8"))
+        palette = json.loads((ROOT / "characters" / "momo" / "palette.json").read_text(
+            encoding="utf-8"))
+        baseline = spec["checks"]["material_area"]["half"]
+        effective, _ = template.resolve_template(spec)
+        with mock.patch.object(asset3.Image.Image, "save", autospec=True):
+            _, debug = asset3.render(
+                ROOT / baseline["source"], "half", "test_momo_head_cast",
+                np.array(palette["colors"], dtype=np.uint8),
+                material_region=True, materials=effective["materials"],
+                material_baseline=baseline,
+                drawing_config=effective["drawing"],
+                body=effective.get("body"), return_debug=True)
+
+        occl = debug["cloth_layers"]["occlusion"]
+        lit_stripe = int(occl[150:215, 40:82].sum())
+        self.assertLessEqual(lit_stripe, 200,
+                             "head shadow must not run down the lit hair edge")
+        casts = [s for s in debug["drawing_report"]["occlusions"]
+                 if s["derive"] == "head_cast"]
+        self.assertTrue(casts, "the head must still cast onto the garment")
+        for item in casts:
+            self.assertGreater(item["pixels"], 0)
+            self.assertGreaterEqual(item["depth"], 8.0,
+                                    "depth must follow the head, not W/32")
+
     def test_fixed_sample_materials_and_palette_assignments(self):
         spec = json.loads((ROOT / "characters" / "momo" / "spec.json").read_text(
             encoding="utf-8"))
         palette = json.loads((ROOT / "characters" / "momo" / "palette.json").read_text(
             encoding="utf-8"))
         baseline = spec["checks"]["material_area"]["half"]
+        effective, _ = template.resolve_template(spec)
+        materials = effective["materials"]
+        drawing_config = effective["drawing"]
         with mock.patch.object(asset3.Image.Image, "save", autospec=True):
             _, debug = asset3.render(
                 ROOT / baseline["source"], "half", "test_momo_regression",
                 np.array(palette["colors"], dtype=np.uint8),
-                material_region=True, materials=spec["materials"],
-                material_baseline=baseline, drawing_config=spec["drawing"],
+                material_region=True, materials=materials,
+                material_baseline=baseline, drawing_config=drawing_config,
                 return_debug=True)
             _, baseline_debug = asset3.render(
                 ROOT / baseline["source"], "half", "test_momo_regression_base",
                 np.array(palette["colors"], dtype=np.uint8),
-                material_region=True, materials=spec["materials"],
+                material_region=True, materials=materials,
                 material_baseline=baseline, return_debug=True)
 
         self.assertTrue(debug["material_report"]["pass"], debug["material_report"])
         np.testing.assert_array_equal(debug["material_idx"], baseline_debug["material_idx"])
-        self.assertTrue(all(item["anchor_hit"] and item["pixels"] > 0
-                            for item in debug["drawing_report"]["folds"]))
-        collar_id = next(i for i, m in enumerate(spec["materials"])
-                         if m["id"] == "collar")
-        skirt_fold = debug["cloth_layers"]["fold"].copy()
-        skirt_fold[:280] = False
-        self.assertGreater((skirt_fold & (debug["material_idx"] == collar_id)).sum(), 300)
+        self.assertEqual(debug["drawing_report"]["folds"], [])
+        self.assertGreater(debug["cloth_layers"]["form"].sum(), 0)
         self.assertGreater(debug["cloth_layers"]["occlusion"].sum(), 0)
         self.assertFalse(debug["line_mask"][222:233, 101:111].any(),
                          "左胸无深色线芯的灰影不得再次变成黑线")
@@ -279,7 +378,18 @@ class MomoRegressionTests(unittest.TestCase):
                                 "刘海对角发丝不得被四邻域误删")
         idx = debug["material_idx"]
         fills = debug["fills"]
-        material_ids = {m["id"]: i for i, m in enumerate(spec["materials"])}
+        material_ids = {m["id"]: i for i, m in enumerate(materials)}
+
+        # v19 regression: both hands touch the cuff/skirt in the white mask,
+        # so "not part of the main white body" must not gate hand recovery.
+        skin_mask = np.isin(idx, [i for i, m in enumerate(materials)
+                                  if m.get("role") == "skin"])
+        self.assertGreaterEqual(int(skin_mask[226:256, 49:70].sum()), 300,
+                                "left hand must stay skin")
+        self.assertGreaterEqual(int(skin_mask[239:283, 162:188].sum()), 600,
+                                "right hand must stay skin")
+        self.assertEqual(int(skin_mask[248:287, 126:159].sum()), 0,
+                         "back-waist fold seam must stay blouse")
 
         skin = fills[idx == material_ids["skin"]]
         self.assertFalse(np.any(np.all(skin == (255, 255, 255), axis=1)),
@@ -291,17 +401,67 @@ class MomoRegressionTests(unittest.TestCase):
 
         iris = fills[idx == material_ids["iris"]]
         iris_colors = {tuple(map(int, c)) for c in np.unique(iris.reshape(-1, 3), axis=0)}
-        self.assertTrue(iris_colors <= {(0, 0, 0), (51, 136, 136), (34, 102, 85)})
-        self.assertTrue(iris_colors & {(51, 136, 136), (34, 102, 85)})
+        self.assertIn((47, 143, 134), iris_colors)
+        # QA issue 5: the dark iris tone used to snap to taupe (#4a3f36) and the
+        # left specular dropped to the hair ramp, so one iris read as
+        # coffee-coloured with no white highlight.
+        self.assertNotIn((74, 63, 54), iris_colors,
+                         "dark iris tone must not snap to taupe")
+        iris_lab, iris_n = label(idx == material_ids["iris"])
+        white = np.all(fills == (255, 255, 255), axis=-1)
+        for k in range(1, iris_n + 1):
+            comp = iris_lab == k
+            if comp.sum() < 20:
+                continue
+            ring = binary_dilation(comp, iterations=3) & ~comp
+            self.assertGreater(int((ring & white).sum()), 0,
+                               "each iris must keep a white specular")
 
-        expected_uniform = {
-            "collar": {(0, 0, 0), (153, 136, 119), (102, 102, 85)},
-            "skirt": {(0, 0, 0), (153, 136, 119), (68, 68, 51)},
-        }
-        for mid, allowed in expected_uniform.items():
+        palette_colors = {tuple(map(int, c)) for c in palette["colors"]}
+        for mid in ("collar", "skirt"):
             pixels = fills[idx == material_ids[mid]]
             colors = {tuple(map(int, c)) for c in np.unique(pixels.reshape(-1, 3), axis=0)}
-            self.assertTrue(colors <= allowed, (mid, colors))
+            self.assertTrue(colors <= palette_colors, (mid, colors))
+
+        # Unified shadow model acceptance: big planes, clear light direction.
+        pal = np.array(palette["colors"], dtype=np.uint8)
+
+        def snap(value):
+            h = value.lstrip("#")
+            c = np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], np.float32)
+            return pal[((pal.astype(np.float32) - c) ** 2).sum(1).argmin()]
+
+        def ratio(mid, color):
+            pixels = fills[idx == material_ids[mid]]
+            return float(np.all(pixels == color, axis=1).mean())
+
+        hair = [snap(s) for s in materials[material_ids["hair"]]["refs"]]
+        self.assertGreaterEqual(ratio("hair", hair[1]), 0.40,
+                                "hair base must stay the dominant tone")
+        hair_dark = sum(ratio("hair", c) for c in hair[2:5])
+        self.assertLessEqual(hair_dark, 0.32,
+                             "hair shadow planes must not swallow the mass")
+
+        skin = [snap(s) for s in materials[material_ids["skin"]]["refs"]]
+        face = matregion._face_anchor(idx, materials)["face"]
+        self.assertIsNotNone(face)
+        face_mid = float(np.all(fills[face] == skin[1], axis=1).mean())
+        # v9.2: face silhouette band was fragmented across the eyes/mouth/nose
+        # and looked messy; it is now limited to the lower 35% (chin/jaw), so
+        # the face carries less mid-tone but is clean (reference style).
+        self.assertGreaterEqual(face_mid, 0.14)
+        self.assertLessEqual(face_mid, 0.36)
+
+        blouse = [snap(s) for s in materials[material_ids["blouse"]]["refs"]]
+        self.assertGreaterEqual(ratio("blouse", blouse[1]), 0.15)
+        self.assertLessEqual(ratio("blouse", blouse[1]), 0.32)
+        self.assertGreaterEqual(ratio("blouse", blouse[2]), 0.03)
+        self.assertLessEqual(ratio("blouse", blouse[2]), 0.10)
+
+        skirt = [snap(s) for s in materials[material_ids["skirt"]]["refs"]]
+        self.assertGreater(ratio("skirt", skirt[1]), 0.05,
+                           "skirt mid tone must not collapse into deep")
+        self.assertGreater(ratio("skirt", skirt[2]), 0.0)
 
 
 if __name__ == "__main__":

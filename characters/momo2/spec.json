@@ -1,0 +1,200 @@
+{
+  "id": "character",
+  "name": "粉卷发水手服雀斑少女 momo2",
+  "gender": "female",
+  "age_group": "teen",
+  "proportions": {
+    "heads": 6.2,
+    "eye_width_ratio": [
+      0.4,
+      0.5
+    ]
+  },
+  "palette": {},
+  "render": {},
+  "outfit": {
+    "type": "sailor",
+    "base": "white short-sleeve sailor blouse",
+    "collar": "taupe grey-brown sailor collar with double white stripes",
+    "accent": "matching cuff stripes, four round front buttons, small chest pocket, light waist band",
+    "bottom": "taupe pleated knee-length skirt"
+  },
+  "hair": {
+    "color": "#f1969b",
+    "length": "long",
+    "style": "curly",
+    "bangs": "wavy"
+  },
+  "face": {
+    "iris": "#3f8f4a"
+  },
+  "overrides": [
+    "large glossy yellow hair bows on both sides of the head",
+    "light freckles across both cheeks",
+    "white short-sleeve sailor blouse with front buttons and a small chest pocket",
+    "brown knee-length pleated skirt",
+    "soft gentle expression"
+  ],
+  "template": {
+    "archetype": "momo",
+    "outfit": "momo_sailor"
+  },
+  "body": {
+    "heads": 6.2,
+    "head_height_px": 74,
+    "shoulder_ratio": 1.4,
+    "waist_ratio": 0.62,
+    "face_width_ratio": 0.66,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "materials": [
+    {
+      "id": "skin",
+      "role": "skin",
+      "refs": [
+        "#ffe0cf",
+        "#e2a98e",
+        "#b3745a"
+      ],
+      "paint": "bands3"
+    },
+    {
+      "id": "hair",
+      "role": "hair",
+      "refs": [
+        "#fbd3d8",
+        "#f1969b",
+        "#c96a75",
+        "#8c4550",
+        "#6a3138"
+      ],
+      "paint": "hair_ring"
+    },
+    {
+      "id": "blouse",
+      "role": "white",
+      "refs": [
+        "#ffffff",
+        "#f2ece0",
+        "#d8cdbb"
+      ],
+      "paint": "white"
+    },
+    {
+      "id": "collar",
+      "role": "cloth",
+      "refs": [
+        "#9a7a5e",
+        "#6b543e",
+        "#463729"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "skirt",
+      "role": "cloth",
+      "refs": [
+        "#8a583f",
+        "#6b4230",
+        "#4a2d21"
+      ],
+      "paint": "rim"
+    },
+    {
+      "id": "bow",
+      "role": "accent",
+      "refs": [
+        "#f6cf4a",
+        "#d9ab22"
+      ],
+      "paint": "flat2"
+    },
+    {
+      "id": "iris",
+      "role": "eye",
+      "refs": [
+        "#3f8f4a",
+        "#1f5a2b"
+      ],
+      "paint": "flat"
+    }
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {
+      "blouse": {
+        "surface": "plain"
+      },
+      "collar": {
+        "surface": "plain"
+      },
+      "skirt": {
+        "surface": "plain"
+      }
+    },
+    "folds": [],
+    "occlusions": [
+      {
+        "over": "collar",
+        "under": "blouse",
+        "derive": "layer_edge",
+        "width": 3.0,
+        "tone": 1
+      },
+      {
+        "over": "bow",
+        "under": "collar",
+        "derive": "layer_edge",
+        "width": 2.0,
+        "tone": 1
+      },
+      {
+        "over": "blouse",
+        "under": "skirt",
+        "derive": "layer_edge",
+        "width": 4.0,
+        "tone": 1
+      }
+    ]
+  },
+  "garment_layers": [
+    {
+      "id": "blouse",
+      "over": [
+        "skin"
+      ]
+    },
+    {
+      "id": "collar",
+      "over": [
+        "blouse"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "skirt",
+      "over": [
+        "blouse"
+      ],
+      "occludes_below": true
+    },
+    {
+      "id": "bow",
+      "over": [
+        "blouse",
+        "collar"
+      ],
+      "occludes_below": true
+    }
+  ]
+}

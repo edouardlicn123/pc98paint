@@ -31,8 +31,10 @@ def lint(img, spec):
         hair_tones = int((counts / counts.sum() >= 0.005).sum())
 
     d_in = distance_transform_edt(fg)
-    # 白衣与眼内高光必须是纯白；不允许被染成奶油色/灰绿
-    pale = (minc > 200) & fg & (d_in >= 2)
+    # 白衣与眼内高光必须是纯白；不允许被染成奶油色/灰绿。
+    # 只统计“接近中性”的亮像素：暖肤色（chroma≈51）本身不是白衣，
+    # 把它算进来会让该指标随露肤面积漂移，而不是反映白衣被染色。
+    pale = (minc > 200) & (chroma <= 40) & fg & (d_in >= 2)
     white_purity = float((chroma[pale] <= 10).mean()) if pale.any() else 1.0
 
     r = spec["render"]
@@ -54,6 +56,7 @@ def lint_materials(idx, materials, fg, baseline=None):
     skin_i = [i for i, m in enumerate(materials) if m.get("role") == "skin"]
     white_i = [i for i, m in enumerate(materials) if m.get("role") == "white"]
     eye_i = [i for i, m in enumerate(materials) if m.get("role") == "eye"]
+    cloth_i = [i for i, m in enumerate(materials) if m.get("role") == "cloth"]
     stats = {m["id"]: int((idx == i).sum()) for i, m in enumerate(materials)}
     checks = {}
 
@@ -74,6 +77,11 @@ def lint_materials(idx, materials, fg, baseline=None):
             eye_ratio = ((eye_ring & (eye | (fg & (idx < 0)))).sum()
                          / max(int(eye_ring.sum()), 1))
             if (comp & eye_near).any() and eye_ratio >= 0.20:
+                continue
+            # Neckline/blouse panels enclosed by skin but bounded by collar or
+            # other cloth are garment pieces, not skin holes.
+            if cloth_i and (binary_dilation(comp, iterations=16)
+                            & np.isin(idx, cloth_i)).any():
                 continue
             ring = binary_dilation(comp, iterations=2) & ~comp
             if ring.sum() and (ring & skin).sum() / ring.sum() >= 0.35:

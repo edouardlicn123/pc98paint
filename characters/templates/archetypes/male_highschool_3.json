@@ -1,0 +1,44 @@
+{
+  "id": "male_highschool_3",
+  "name": "高中男生3",
+  "ref": "13",
+  "gender": "male",
+  "age_group": "teen",
+  "outfit_type": "casual_jacket",
+  "body": {
+    "heads": 7.0,
+    "head_height_px": 70,
+    "shoulder_ratio": 2.3,
+    "face_width_ratio": 0.77,
+    "bust": {
+      "size": 0,
+      "center_y_head": 1.75,
+      "separation": 0.35,
+      "under_boob_y_head": null,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "standing_front"
+  },
+  "face": {
+    "shape": "oval",
+    "eyes": "hidden",
+    "eye_size": "none",
+    "brows": "thick_diagonal",
+    "nose": "L_shape",
+    "mouth": "grin",
+    "markings": [
+      "sunglasses"
+    ]
+  },
+  "hair": {
+    "length": "short",
+    "bangs": "spiky",
+    "tie": "headband",
+    "style": "pink hair with blue headband",
+    "color_family": "pink",
+    "reflection": "block"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "loli",
+  "name": "萝莉",
+  "ref": "02",
+  "gender": "female",
+  "age_group": "child",
+  "outfit_type": "sailor",
+  "body": {
+    "heads": 5.75,
+    "head_height_px": 74,
+    "shoulder_ratio": 1.09,
+    "face_width_ratio": 0.64,
+    "bust": {
+      "size": 2,
+      "center_y_head": 1.9,
+      "separation": 0.42,
+      "under_boob_y_head": 2.2,
+      "projection": 0.0
+    },
+    "torso": {
+      "lean": 0.0
+    },
+    "pose": "arms_behind_back"
+  },
+  "face": {
+    "shape": "round",
+    "eyes": "round",
+    "eye_size": "large",
+    "brows": "thin_arched",
+    "nose": "dot",
+    "mouth": "small_open_smile",
+    "markings": [
+      "freckles"
+    ]
+  },
+  "hair": {
+    "length": "long",
+    "bangs": "straight",
+    "tie": "twin_tails",
+    "style": "pink long twin tails with yellow bows",
+    "color_family": "pink",
+    "reflection": "ring"
+  }
+}

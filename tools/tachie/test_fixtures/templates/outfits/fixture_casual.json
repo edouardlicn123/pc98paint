@@ -1,0 +1,31 @@
+{
+  "id": "fixture_casual",
+  "archetype": "fixture_female",
+  "type": "casual",
+  "name": "测试常服",
+  "outfit": {
+    "type": "casual",
+    "base": "beige cardigan",
+    "collar": "crew neck",
+    "accent": "red ribbon",
+    "bottom": "green skirt"
+  },
+  "materials": [
+    {"id": "skin", "role": "skin", "refs": ["#f6d9c8", "#e8b39c"], "paint": "bands3"},
+    {"id": "hair", "role": "hair", "refs": ["#eebb66", "#885544", "#664433"], "paint": "hair_ring"},
+    {"id": "cardigan", "role": "cloth", "group": "casual", "refs": ["#cc8855", "#886644", "#664433"], "paint": "rim"},
+    {"id": "skirt", "role": "cloth", "group": "casual", "refs": ["#668855", "#446644", "#335533"], "paint": "rim"},
+    {"id": "iris", "role": "eye", "refs": ["#338888", "#225555"], "paint": "flat"}
+  ],
+  "garment_layers": [
+    {"id": "cardigan", "over": ["skin"]},
+    {"id": "skirt", "over": ["skin"], "occludes_below": true}
+  ],
+  "drawing": {
+    "light": "upper-left",
+    "materials": {"cardigan": {"surface": "plain"}, "skirt": {"surface": "plain"}},
+    "occlusions": [
+      {"over": "skirt", "under": "cardigan", "derive": "layer_edge", "width": 1.2, "tone": 1}
+    ]
+  }
+}
